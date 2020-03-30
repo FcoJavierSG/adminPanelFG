@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    Bienvenido al panel de administración de FuturGuide AR
                 </div>
 
                 <div class="links">
