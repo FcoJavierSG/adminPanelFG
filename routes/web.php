@@ -13,26 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('inicio');
+Route::get('/', 'PagesController@index')->name('inicio');
 
 Route::get('login', function () {
     return view('login');
 });
 
-Route::get('docencia/{nombre?}', function ($nombre) {
-    //Traemos un vector de las colecciones implicadas en la vista de manera dinamica
-    $docencia = ['ABD','ED','MP'];
-    //$asignatura = [];
+Route::get('docencia/{nombre?}', 'PagesController@docencia')->name('docencia');
 
-    return view('docencia', compact('docencia'));
-})->name('docencia');
+Route::get('despacho', 'PagesController@despacho')->name('despacho');
 
-Route::get('despacho', function () {
-    return view('despacho');
-})->name('despacho');
+Route::get('informacion', 'PagesController@informacion')->name('informacion');
 
-Route::get('informacion', function () {
-    return view('informacion');
-})->name('informacion');
+Route::get('firebase','FirebaseController@index');

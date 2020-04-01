@@ -11,9 +11,14 @@
     @if(!empty($nombre))
         @switch($nombre)
             @case($nombre=='ABD')
-                <h3>E</h3>
+                <h3>La asignatura es {{ $nombre }}</h3>
+                @break
             @case($nombre=='ED')
+                <h3>La asignatura es {{ $nombre }}</h3>
+                @break
             @case($nombre=='MP')
+                <h3>La asignatura es {{ $nombre }}</h3>
+                @break
         @endswitch
     @endif
 @endsection

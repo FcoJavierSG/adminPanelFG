@@ -20,7 +20,7 @@
 <!-- Sidebar -->
 <div class="bg-light border-right" id="sidebar-wrapper">
     <div class="sidebar-heading">
-        <img class="mb-3" src="{!! asset('images/iconoFG-76.png') !!}" style="border-radius: 20px" alt="logo" width="76" height="76">
+        <img class="" src="{!! asset('images/iconoFG-76.png') !!}" style="border-radius: 20px" alt="logo" width="75" height="75">
     </div>
     <div class="list-group list-group-flush">
         <a href="#" class="list-group-item list-group-item-action bg-light">Inicio</a>

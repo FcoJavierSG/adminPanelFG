@@ -114,7 +114,7 @@ body {
 --------------------------------------------------- */
 #sidebar-wrapper {
     min-height: 100vh;
-    margin-left: -7rem;
+    margin-left: -6rem;
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
@@ -123,14 +123,14 @@ body {
 
 #sidebar-wrapper .sidebar-heading {
     text-align: center;
-    padding: 0.875rem 1.25rem;
+
     font-size: 1.2rem;
-    width: 7rem;
+    width: 5rem;
     background: #b3001b;
 }
 
 #sidebar-wrapper .list-group {
-    width: 7rem;
+    width: 5rem;
 }
 
 #page-content-wrapper {
@@ -152,6 +152,6 @@ body {
     }
 
     #wrapper.toggled #sidebar-wrapper {
-        margin-left: -7rem;
+        margin-left: -5rem;
     }
 }
