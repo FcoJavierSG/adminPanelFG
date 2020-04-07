@@ -1,5 +1,5 @@
-@extends('plantilla')
-
+@extends('master')
+@section('title', 'Docencia | FuturguideAR')
 @section('seccion')
     <h1>Docencia</h1>
     <h2>Esta es la docencia disponible</h2>

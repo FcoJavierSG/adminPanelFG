@@ -26,7 +26,10 @@ class PagesController extends Controller
         return view('docencia', compact('docencia', 'nombre'));
     }
 
-    public function informacion(){
+    public function informacion($tipo = null){
+        // Si no es nulo llamamos a
+        if(!isNull($tipo))
+
         return view('informacion');
     }
 }

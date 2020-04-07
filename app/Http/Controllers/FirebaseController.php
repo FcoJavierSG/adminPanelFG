@@ -35,8 +35,8 @@ class FirebaseController extends Controller
         $db = $firebase->database();
 
 
-        // PRUEBAS
-        $snapshot = $db->collection('users')->documents();
+        /* PRUEBAS
+        $snapshot = $db->collection('info_miscela')->documents();
 
         foreach ($snapshot as $user) {
             if ($user->exists()) {
@@ -48,8 +48,8 @@ class FirebaseController extends Controller
             }
         }
 
-        echo '<pre>';
-
+        echo '<pre>';*/
+        return $db;
     }
 
     public function create($collection, $data){
@@ -59,16 +59,16 @@ class FirebaseController extends Controller
         return json_encode($docRef);
     }
 
-    public function read($collection, $queryCondition){
-        $docRef = self::$db->collection($collection);
+    public function read($collection, $queryCondition = null){
+            $docRef = self::$db->collection($collection);
 
-        //Controlamos si añade condicion
-        if(!isNull($queryCondition)) {
-            $query = $docRef->where($queryCondition);
-            $documents = $query->documents();
-        } else {
-            $documents = $docRef->documents();
-        }
+            //Controlamos si añade condicion
+            if(!isNull($queryCondition)) {
+                $query = $docRef->where($queryCondition);
+                $documents = $query->documents();
+            } else {
+                $documents = $docRef->documents();
+            }
 
         return dd ($documents);
     }
