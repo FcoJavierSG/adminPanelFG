@@ -6,27 +6,79 @@ use Illuminate\Http\Request;
 
 class DespachoController extends Controller
 {
-    /*  IMP: DEBEMOS CONTROLAR Y FILTRAR LOS DATOS PARA QUE SE CUMPLAN LOS REQUISITOS
-
-        A REALIZAR:
-
-        FUNCIÓN PARA LEER TODOS LOS DESPACHOS
-        FUNCIÓN PARA LEER UN DESPACHO EN CONCRETO
-        FUNCIÓN PARA CREAR NUEVO DESPACHO
-        FUNCIÓN PARA EDITAR DESPACHO
-        FUNCIÓN PARA ELIMINAR DESPACHO
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
      */
-
-    /* Función para leer la coleccion de información desde firebase y devolver
-        un array asociativo con los campos correspondientes */
-    public function readInfo($database){
-
+    public function index()
+    {
+        //
     }
 
-    /* Función para leer un documento de información desde firebase y devolver
-        un array asociativo con los campos correspondientes */
-    public function readDocInfo($database, $id){
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 }

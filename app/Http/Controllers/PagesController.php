@@ -28,7 +28,7 @@ class PagesController extends Controller
 
     public function informacion($tipo = null){
         // Si no es nulo llamamos a
-        if(!isNull($tipo))
+        //if(!isNull($tipo))
 
         return view('informacion');
     }

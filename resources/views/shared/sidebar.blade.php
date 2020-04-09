@@ -4,9 +4,9 @@
     </div>
     <div class="list-group list-group-flush">
         <a href="{{ route('inicio') }}" class="list-group-item list-group-item-action bg-light">Inicio</a>
-        <a href="{{ route('despacho') }}" class="list-group-item list-group-item-action bg-light">Despacho</a>
-        <a href="{{ route('docencia') }}" class="list-group-item list-group-item-action bg-light">Docencia</a>
-        <a href="{{ route('informacion') }}" class="list-group-item list-group-item-action bg-light">Información</a>
+        <a href="{{ route('despacho.index') }}" class="list-group-item list-group-item-action bg-light">Despacho</a>
+        <a href="{{ route('docencia.index') }}" class="list-group-item list-group-item-action bg-light">Docencia</a>
+        <a href="{{ route('informacion.index') }}" class="list-group-item list-group-item-action bg-light">Información</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">Cerrar sesión</a>
     </div>
 </div>

@@ -23,20 +23,24 @@ use Kreait\Firebase\Firestore;
 
 class FirebaseController extends Controller
 {
-    //
+    //Variable static donde se guardará la instancia de Firestore
     protected static $db;
 
-    public function index(){
+    //Constructor por defecto de la clase
+    public function __construct() {
+        //Iniciamos una instancia con la BD
         $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
         $firebase = (new Factory)
             ->withServiceAccount($serviceAccount)
             ->withDatabaseUri('https://futurguide.firebaseio.com/')->createFirestore();
 
-        $db = $firebase->database();
+        //Guardamos dicha instancia
+        static::$db = $firebase->database();
+    }
 
-
-        /* PRUEBAS
-        $snapshot = $db->collection('info_miscela')->documents();
+    public function index(){
+        //PRUEBAS
+        $snapshot = static::$db->collection('users')->documents();
 
         foreach ($snapshot as $user) {
             if ($user->exists()) {
@@ -48,8 +52,10 @@ class FirebaseController extends Controller
             }
         }
 
-        echo '<pre>';*/
-        return $db;
+        echo '<pre>';
+
+        //Devolvemos la instancia de Firestore
+        //return static::$db;
     }
 
     public function create($collection, $data){
@@ -59,18 +65,17 @@ class FirebaseController extends Controller
         return json_encode($docRef);
     }
 
-    public function read($collection, $queryCondition = null){
+    public function read($collection, $id = null){
             $docRef = self::$db->collection($collection);
 
             //Controlamos si añade condicion
-            if(!isNull($queryCondition)) {
-                $query = $docRef->where($queryCondition);
-                $documents = $query->documents();
+            if(!is_null($id)) {
+                $documents = $docRef->document($id);
             } else {
                 $documents = $docRef->documents();
             }
 
-        return dd ($documents);
+        return $documents;
     }
 
     public function update($collection, $id, $data){
