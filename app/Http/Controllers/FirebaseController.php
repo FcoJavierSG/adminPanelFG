@@ -33,7 +33,6 @@ class FirebaseController extends Controller
         $firebase = (new Factory)
             ->withServiceAccount($serviceAccount)
             ->withDatabaseUri('https://futurguide.firebaseio.com/')->createFirestore();
-
         //Guardamos dicha instancia
         static::$db = $firebase->database();
     }
@@ -70,7 +69,9 @@ class FirebaseController extends Controller
 
             //Controlamos si añade condicion
             if(!is_null($id)) {
-                $documents = $docRef->document($id);
+                $docRef = $docRef->document($id);
+                $documents = $docRef->snapshot();
+
             } else {
                 $documents = $docRef->documents();
             }

@@ -1,7 +1,7 @@
-<nav class="navbar navbar-expand-md navbar-light bg-light border-bottom">
+
+<nav class="navbar navbar-expand navbar-light bg-light border-bottom">
     <a href="#" class="navbar-brand">FuturGuideAR <b class="h6 font-weight-light">Panel de administración</b></a>
     <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
-
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>

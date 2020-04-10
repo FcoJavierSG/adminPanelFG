@@ -171,7 +171,41 @@ class InfoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //Recogemos los datos del formulario sin token
+        $datosInfo = request()->except(['_token', '_method']);
+
+        //Modificamos el contenido para pasar a guardar en Firebase la ruta del archivo y guardarla en local
+        if($request->hasFile('foto_ppal')){
+            $datosInfo['foto_ppal'] = $request->file('foto_ppal')->store('uploads/informacion', 'public');
+        } else {
+            $datosInfo['foto_ppal'] = null;
+        }
+
+        //Creamos un objeto de Info y lo vamos rellenando de las variables del formulario
+        $infoData = $this->informacion;
+        $infoData->titulo = $datosInfo['titulo'];
+        $infoData->fecha = $datosInfo['fecha'];
+        $infoData->info_ppal = $datosInfo['info_ppal'];
+        if(!is_null($datosInfo['foto_ppal'])){
+            $infoData->foto_ppal = $datosInfo['foto_ppal'];
+        }
+
+        /*  EN ESTE PUNTO DEBERIAMOS:
+            - COMPROBAR QUE HAY UNA SESION ACTIVA Y TIENE ROL DE ADMIN DICHO USUARIO
+            - COMPROBAR SI YA EXISTE UNA ENTRADA IGUAL EN FIRABASE
+            - COMPROBAR CON ANTERIORIDAD LA CORRECTITUD DE LOS DATOS
+        */
+
+        //Generamos el array asociativo que necesitamos
+        $infoData->setInfo();
+
+        //Guardamos la instancia de Firebase
+        $db = $this->firebase;
+        //Llamamos al método de la clase que inserta los datos
+        $docRef = $db->update('info_miscelanea', $id, $infoData->info);
+
+        //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA EDICION
+        return var_dump($docRef);
     }
 
     /**

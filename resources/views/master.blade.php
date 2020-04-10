@@ -17,18 +17,22 @@
 <body>
 
 <div class="container-fluid">
-    <div class="d-flex" id="wrapper">
-        <!-- Sidebar -->
-        @include('shared.sidebar')
-        <!-- /#sidebar-wrapper -->
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            @include('shared.navbar')
-            <div class="container-fluid">
-                @yield('seccion')
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex" id="wrapper">
+                <!-- Sidebar -->
+                @include('shared.sidebar')
+                <!-- /#sidebar-wrapper -->
+                <!-- Page Content -->
+                <div id="page-content-wrapper">
+                    @include('shared.navbar')
+                    <div class="container-fluid">
+                        @yield('seccion')
+                    </div>
+                </div>
+                <!-- /#page-content-wrapper -->
             </div>
         </div>
-        <!-- /#page-content-wrapper -->
     </div>
 </div>
 <!-- /#wrapper -->
