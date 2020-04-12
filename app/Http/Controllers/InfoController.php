@@ -10,6 +10,7 @@ class InfoController extends Controller
     protected $informacion;
     protected $firebase;
     protected $storage;
+
     protected static $db;
 
     /**
@@ -33,8 +34,6 @@ class InfoController extends Controller
         $db = $this->firebase;
 
         $documentos = $db->read('info_miscelanea');
-
-        //IMP AL LEER SERÍA INTERESANTE MOSTRAR O OBTENER LAS IMAGENES PARA MOSTRARLAS
 
         return view('informacion.index')->with('documentos', $documentos);
     }
@@ -62,46 +61,63 @@ class InfoController extends Controller
         //Recogemos los datos del formulario sin token
         $datosInfo = request()->except('_token');
 
-        /*  DEBERIAMOS:
-            - COMPROBAR SI YA EXISTE UNA ENTRADA IGUAL EN FIRABASE
-        */
-
-        //Modificamos el contenido para pasar a guardar en Firebase la ruta del archivo y guardarla en local
-        if($request->hasFile('foto_ppal')){
-            //$datosInfo['foto_ppal'] = $request->file('foto_ppal')->store('uploads/informacion', 'public');
-            $pathName = $request->file('foto_ppal')->getPathname();
-            $fileName = $request->file('foto_ppal')->getFilename();
-            $fileName = $fileName . '.' . $request->file('foto_ppal')->extension();
-
-            //AQUI DEBERIA GUARDAR LA FOTO EN STORAGE
-            $storage = $this->storage;
-
-            $storage->upload('', $pathName, $fileName);
-
-            $datosInfo['foto_ppal'] = $fileName;
+        /* Comprobamos si existe un documento con mismo titulo, fecha e info_ppal
+         * en cuyo caso no insertaremos */
+        if ($this->exist($datosInfo['titulo'], $datosInfo['fecha'], $datosInfo['info_ppal'])) {
+            //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
+            printf('YA EXISTE');
         } else {
-            $datosInfo['foto_ppal'] = null;
+            //Modificamos el contenido para pasar a guardar en Firebase la ruta del archivo y guardarla en local
+            if($request->hasFile('foto_ppal') && $request->hasFile('foto')){
+                $pathName = $request->file('foto_ppal')->getPathname();
+                $fileName = $request->file('foto_ppal')->getFilename();
+                $fileName = $fileName . '.' . $request->file('foto_ppal')->extension();
+
+                //Procedemos al guardado de la foto en Storage
+                $storage = $this->storage;
+                $storage->upload('', $pathName, $fileName);
+
+                $datosInfo['foto_ppal'] = $fileName;
+
+                //Ahora insertamos la foto adicional
+                $pathName = $request->file('foto')->getPathname();
+                $fileName = $request->file('foto')->getFilename();
+                $fileName = $fileName . '.' . $request->file('foto')->extension();
+
+                //Procedemos al guardado de la foto en Storage
+                $storage->upload('', $pathName, $fileName);
+
+                $datosInfo['foto'] = $fileName;
+            } else if($request->hasFile('foto_ppal')) {
+                $pathName = $request->file('foto_ppal')->getPathname();
+                $fileName = $request->file('foto_ppal')->getFilename();
+                $fileName = $fileName . '.' . $request->file('foto_ppal')->extension();
+
+                //Procedemos al guardado de la foto en Storage
+                $storage = $this->storage;
+                $storage->upload('', $pathName, $fileName);
+
+                $datosInfo['foto_ppal'] = $fileName;
+                $datosInfo['foto'] = null;
+            }else{
+                $datosInfo['foto_ppal'] = null;
+                $datosInfo['foto'] = null;
+            }
+
+            //Creamos un objeto de Info y lo vamos rellenando de las variables del formulario
+            $infoData = $this->informacion;
+
+            //Generamos el array asociativo que necesitamos
+            $infoData->setInfo(null, $datosInfo['tipo'], $datosInfo['titulo'], $datosInfo['fecha'],
+                $datosInfo['info_ppal'], $datosInfo['foto_ppal'], $datosInfo['info'], $datosInfo['foto'],$datosInfo['estado']);
+
+            //Llamamos al método de la clase que inserta los datos
+            $db = $this->firebase;
+            $docRef = $db->create('info_miscelanea', $infoData->info);
+
+            //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
+            return var_dump($docRef);
         }
-
-        //Creamos un objeto de Info y lo vamos rellenando de las variables del formulario
-        $infoData = $this->informacion;
-        $infoData->titulo = $datosInfo['titulo'];
-        $infoData->fecha = $datosInfo['fecha'];
-        $infoData->info_ppal = $datosInfo['info_ppal'];
-        if(!is_null($datosInfo['foto_ppal'])){
-            $infoData->foto_ppal = $datosInfo['foto_ppal'];
-        }
-
-        //Generamos el array asociativo que necesitamos
-        $infoData->setInfo();
-
-        //Guardamos la instancia de Firebase
-        $db = $this->firebase;
-        //Llamamos al método de la clase que inserta los datos
-        $docRef = $db->create('info_miscelanea', $infoData->info);
-
-        //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
-        return var_dump($docRef);
     }
 
     /**
@@ -151,7 +167,7 @@ class InfoController extends Controller
 
         //Guardamos la instancia de Firebase
         $db = $this->firebase;
-        //Recogemos el documento a actualizar para comprobaciones
+        //Recogemos el documento a actualizar para comprobar si tiene una foto insertada
         $documento = $db->read('info_miscelanea', $datosInfo['docID']);
 
         //Modificamos el contenido para pasar a guardar en Firebase la ruta del archivo y guardarla en local
@@ -177,17 +193,10 @@ class InfoController extends Controller
 
         //Creamos un objeto de Info y lo vamos rellenando de las variables del formulario
         $infoData = $this->informacion;
-        $infoData->titulo = $datosInfo['titulo'];
-        $infoData->fecha = $datosInfo['fecha'];
-        $infoData->info_ppal = $datosInfo['info_ppal'];
-        if(!is_null($datosInfo['foto_ppal'])){
-            $infoData->foto_ppal = $datosInfo['foto_ppal'];
-        }
-
-        // EN ESTE PUNTO DEBERIAMOS COMPROBAR CON ANTERIORIDAD LA CORRECTITUD DE LOS DATOS¿?
 
         //Generamos el array asociativo que necesitamos
-        $infoData->setInfo();
+        $infoData->setInfo(null, null, $datosInfo['titulo'], $datosInfo['fecha'],
+            $datosInfo['info_ppal'], $datosInfo['foto_ppal'], null, null,null);
 
         //Llamamos al método de la clase que inserta los datos
         $repuesta = $db->update('info_miscelanea', $id, $infoData->info);
@@ -212,10 +221,36 @@ class InfoController extends Controller
 
         $db->delete('info_miscelanea', $id);
 
-        $storage->destroy('', $documento['foto_ppal']);
-
+        if (!is_null($documento['foto_ppal'])) $storage->destroy('', $documento['foto_ppal']);
 
         //SERIA CONVENIENTE RETORNAR UNA CONFIRMACIÓN
         return redirect('informacion');
     }
+
+
+    /**
+     * Comprueba la existencia de una entrada en 'info_miscelanea'
+     *
+     * @param $titulo
+     * @param $fecha
+     * @param $info_ppal
+     * @return bool
+     */
+    public function exist($titulo, $fecha, $info_ppal){
+        $db = $this->firebase;
+        $consulta = $db->collection('info_miscelanea')
+            ->where('titulo', '=', $titulo)
+            ->where('fecha', '=', $fecha)
+            ->where('info_ppal', '=', $info_ppal);
+
+        $documentos = $consulta->documents();
+
+        $docExiste = false;
+        foreach ($documentos as $documento){
+            if ($documento->exists()) $docExiste = true;
+        }
+
+        return $docExiste;
+    }
+
 }

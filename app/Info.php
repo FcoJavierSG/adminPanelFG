@@ -9,29 +9,20 @@ class Info /*extends Model*/
     //JSON que contiene la informacion lista para usar
     public $info;
 
-    //Variables que puede contener cualquier información
-    public $codInfo = null;
-    public $tipo = null;
-    public $titulo = null;
-    public $fecha = null;
-    public $info_ppal = null;
-    public $foto_ppal = null;
-    public $infor = array(null);
-    public $foto = array(null);
-    public $estado = null;
-
     //Funcion para rellenar JSON con la informacion del documento
-    public function setInfo(){
+    public function setInfo($codInfo = null, $tipo = null, $titulo = null,
+                            $fecha = null, $info_ppal = null, $foto_ppal = null,
+                            $infor = null, $foto = null, $estado = null){
         $this->info = array(
-            'cod_info' => $this->codInfo,
-            'tipo' => $this->tipo,
-            'titulo' => $this->titulo,
-            'fecha' => $this->fecha,
-            'info_ppal' => $this->info_ppal,
-            'foto_ppal' => $this->foto_ppal,
-            'info' => $this->infor,
-            'foto' => $this->foto,
-            'estado' => $this->estado );
+            'cod_info' => $codInfo,
+            'tipo' => $tipo,
+            'titulo' => $titulo,
+            'fecha' => $fecha,
+            'info_ppal' => $info_ppal,
+            'foto_ppal' => $foto_ppal,
+            'info' => $infor,
+            'foto' => $foto,
+            'estado' => $estado);
     }
 
     //Funcion para devolver JSON de la info

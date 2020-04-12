@@ -8,9 +8,14 @@ use Kreait\Firebase\ServiceAccount;
 
 class StorageController extends Controller
 {
+    /**
+     * Variable donde se almacena una instancia de Storage
+     */
     protected static $storage;
-    protected static $bucket;
 
+    /**
+     * Constructor por defecto de la clase, en donde inicializamos $storage
+     */
     public function __construct()
     {
         //Iniciamos una instancia de Storage con Firebase
@@ -20,15 +25,19 @@ class StorageController extends Controller
             ->withDatabaseUri('https://futurguide.firebaseio.com/')->createStorage();
         //Guardamos dicha instancia de Storage
         static::$storage = $firebase;
-
-        //ESTA SENTENCIA LA DEBEMOS UTILIZAR PARA SELECCIONAR LA CARPETA DETERMINADA
-        //$storage->getBucket($bucketName);
     }
 
-    //Funcion para subir un archivo a Storage y que devuelva la referencia
-    //IMP:
-    // $filePath deberia contener un $_FILES['imageToUpload]['tmp_name']
-    // $filenaName deberia contener un $_FILES['imageToUpload]['name']
+    /**
+     * Sube a Cloud Storage un nuevo archivo recibiendo como parametros la ruta $filePath,
+     * el nombre $fileName y si es necesario el bucket $bucketName donde se almacenará.
+     *
+     * Nota: $filePath y $fileName deberian ser del tipo $_FILES['imageToUpload']['tmp_name']
+     * y $_FILES['imageToUpload']['name'] respectivamente.
+     *
+     * @param $bucketName
+     * @param $filePath
+     * @param $fileName
+     */
     public function upload($bucketName, $filePath, $fileName) {
         $file = fopen($filePath, 'r');
 
@@ -36,7 +45,7 @@ class StorageController extends Controller
         $deposito->upload($file,
             [
                 'name' => $fileName
-                //En caso de querer visualizar las fotos de manera publica añadir lo siguiente
+                //En caso de querer visualizar las fotos de manera publica, añadir lo siguiente
                 /*
                  'acl' => [],
                  'predefinedAcl' => 'PUBLICREAD'
@@ -44,10 +53,11 @@ class StorageController extends Controller
             ]
         );
 
-        //IMP DE MOMENTO DEVOLVEMOS EL 'mediaLink' o link de descarga
+        /* En caso de querer generar el link de descarga o visualizacion de otra forma,
+           descomentar para devolver array con dicho contenido.
         $respuesta = $deposito->object($fileName)->info();
 
-        return $respuesta;
+        return $respuesta;*/
     }
 
     /**
@@ -66,8 +76,6 @@ class StorageController extends Controller
             ->createStorage();
         //Guardamos dicha instancia de Storage
         $storage = $firebase->getBucket()->object('prueba.jpeg')->info();
-
-
 
        /* $file = file_get_contents('/Applications/MAMP/htdocs/laravel/adminPanelFG/storage/app/public/uploads/informacion/KBuM9gJ0JJOen2yR87e6J1TKEuwuKsRSu46eGPe7.jpeg');
 
@@ -141,12 +149,12 @@ class StorageController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina un archivo con nombre $fileName y almacenado en el bucket $bucketName
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $bucketName
+     * @param string $fileName
      */
-    public function destroy($bucketName, $fileName, $options = [])
+    public function destroy($bucketName, $fileName)
     {
         $deposito = static::$storage->getBucket($bucketName);
 

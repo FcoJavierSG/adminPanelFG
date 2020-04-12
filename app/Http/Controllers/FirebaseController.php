@@ -23,9 +23,14 @@ use Kreait\Firebase\Firestore;
 
 class FirebaseController extends Controller
 {
-    //Variable static donde se guardará la instancia de Firestore
+   /**
+    * Variable donde almacenaremos la instancia de Firestore
+    */
     protected static $db;
 
+    /**
+     * Constructor por defecto de la clase, en el inicializamos $db
+     */
     //Constructor por defecto de la clase
     public function __construct() {
         //Iniciamos una instancia con la BD
@@ -37,26 +42,32 @@ class FirebaseController extends Controller
         static::$db = $firebase->database();
     }
 
+    /*
     public function index(){
         //PRUEBAS
-        $snapshot = static::$db->collection('users')->documents();
+        $snapshot = static::$db->collection('info_miscelanea')->where('titulo', '=', 'pruebaStorage')
+            ->where('fecha', '=', '11/4/2020')
+            ->where('info_ppal', '=', 'storage');
+
+        $snapshot = $snapshot->documents();
 
         foreach ($snapshot as $user) {
             if ($user->exists()) {
-                printf('Document data for document %s:' . PHP_EOL, $user->id());
-                print_r($user->data());
-                printf(PHP_EOL);
+                return true;
             } else {
-                printf('Document %s does not exist!' . PHP_EOL, $snapshot->id());
+                return false;
             }
         }
-
-        echo '<pre>';
-
         //Devolvemos la instancia de Firestore
         //return static::$db;
-    }
+    }*/
 
+    /**
+     * Crea una nueva entrada en Cloud Firestore en la coleccion
+     * y con los datos pasados como parámetros
+     *
+     * - Devuelve una confirmación de inserccion
+     */
     public function create($collection, $data){
         $docRef = self::$db->collection($collection);
         $docRef->add($data);
@@ -64,6 +75,12 @@ class FirebaseController extends Controller
         return json_encode($docRef);
     }
 
+    /**
+     * Lee de Cloud Firestore, bien una coleccion entera, bien
+     * un documento a partir de su id
+     *
+     * - Devuelve una lista de documentos o documento
+     */
     public function read($collection, $id = null){
             $docRef = self::$db->collection($collection);
 
@@ -79,15 +96,30 @@ class FirebaseController extends Controller
         return $documents;
     }
 
+    /**
+     * Actualiza un documento de una coleccion de Cloud Firestore
+     * con los datos pasados y que se corresponda con el id dado
+     */
     public function update($collection, $id, $data){
         $docRef = self::$db->collection($collection)->document($id);
         $docRef->set($data);
         printf('Editado de la coleccion ' . $collection . ' el documento con id: ' . $id . PHP_EOL);
     }
 
+    /**
+     * Elimina de Cloud Firestore un documento de una coleccion
+     * determinada y con el id dado
+     */
     public function delete($collection, $id){
         $docRef = self::$db->collection($collection)->document($id);
         $docRef->delete();
         printf('Eliminado  de la coleccion ' . $collection . ' el documento con id ' . $id . PHP_EOL);
+    }
+
+    /**
+     * Devuelve una coleccion determinada para poder operar
+     */
+    public function collection($collection){
+        return self::$db->collection($collection);
     }
 }
