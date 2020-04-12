@@ -13,6 +13,7 @@
                 <form action="{{ url('informacion/' . $documento->id()) }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                     {{ csrf_field() }}
                     {{ method_field('PATCH')  }}
+                    <input type="hidden" name="docID" id="docID" value="{{$documento->id()}}">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="titulo">{{'Titulo'}}</label>

@@ -7,89 +7,78 @@ use Illuminate\Http\Request;
 
 class InfoController extends Controller
 {
-    //  CONTROLADOR PARA TODAS LAS VISTAS DE INFORMACIÓN
-    /*
-     *  CADA FUNCIÓN DEBERIA RETORNAR LA VISTA CORRESPONDIENTE
-     *  Y PROPORCIONAR LOS DATOS NECESARIOS A DICHA VISTA
-     *
-     * */
-
-    //Variable que contiene un objeto de la clase Info
     protected $informacion;
     protected $firebase;
+    protected $storage;
     protected static $db;
 
-    //Constructor de la clase
-    //
+    /**
+     * Construtor por defecto de la clase, donde se inicializan las
+     * principales variables.
+     */
     function __construct(){
         $this->informacion = new Info();
         $this->firebase = new FirebaseController();
+        $this->storage = new StorageController();
     }
 
     /**
-     * Display a listing of the resource.
+     * Lee de Cloud Firestore todos los documentos de 'info_miscelanea'
+     * y los devuelve junto con la vista principal de información
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-    //Funcion para leer y cargar de Firestore la tabla de información al completo
     public function index()
     {
-        /*  PASOS:
-         * 1. Verificar la sesión o el rol
-         * 2. Abrir una instancia con la base de datos
-         * 3. Leer coleccion
-         * 4. Devolver vista con los documentos de dicha coleccion
-         */
-
         $db = $this->firebase;
 
         $documentos = $db->read('info_miscelanea');
 
-        //return var_dump($documentos);
+        //IMP AL LEER SERÍA INTERESANTE MOSTRAR O OBTENER LAS IMAGENES PARA MOSTRARLAS
+
         return view('informacion.index')->with('documentos', $documentos);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Devuelve la vista al formulario de creación .
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-    //Funcion que controla la creación de una nueva entrada de información
     public function create()
     {
-        /*  PASOS:
-         * 1. Verificar la sesión o el rol
-         * 2. Devolver vista con el formulario
-         */
         return view('informacion.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacena en la coleccion 'info_miscelanea' de Cloud Firestore
+     * un nuevo documento con los datos del formulario, la imagen
+     * la subimos a Cloud Storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        /*  PASOS:
-         * 0. Recoger datos del formulario
-         * 1. Verificar la sesión o el rol
-         * 2. Abrir una instancia con la base de datos
-         * 3. Comprobar si existe un documento con dicha información
-         * 4. Rellenar el objeto
-         * 5. Insertar la informacion
-         * 6. Devolver vista que confirme la inserccion
-         */
-
-        //$datosInfo = request()->all();
-
         //Recogemos los datos del formulario sin token
         $datosInfo = request()->except('_token');
 
+        /*  DEBERIAMOS:
+            - COMPROBAR SI YA EXISTE UNA ENTRADA IGUAL EN FIRABASE
+        */
+
         //Modificamos el contenido para pasar a guardar en Firebase la ruta del archivo y guardarla en local
         if($request->hasFile('foto_ppal')){
-            $datosInfo['foto_ppal'] = $request->file('foto_ppal')->store('uploads/informacion', 'public');
+            //$datosInfo['foto_ppal'] = $request->file('foto_ppal')->store('uploads/informacion', 'public');
+            $pathName = $request->file('foto_ppal')->getPathname();
+            $fileName = $request->file('foto_ppal')->getFilename();
+            $fileName = $fileName . '.' . $request->file('foto_ppal')->extension();
+
+            //AQUI DEBERIA GUARDAR LA FOTO EN STORAGE
+            $storage = $this->storage;
+
+            $storage->upload('', $pathName, $fileName);
+
+            $datosInfo['foto_ppal'] = $fileName;
         } else {
             $datosInfo['foto_ppal'] = null;
         }
@@ -102,12 +91,6 @@ class InfoController extends Controller
         if(!is_null($datosInfo['foto_ppal'])){
             $infoData->foto_ppal = $datosInfo['foto_ppal'];
         }
-
-        /*  EN ESTE PUNTO DEBERIAMOS:
-            - COMPROBAR QUE HAY UNA SESION ACTIVA Y TIENE ROL DE ADMIN DICHO USUARIO
-            - COMPROBAR SI YA EXISTE UNA ENTRADA IGUAL EN FIRABASE
-            - COMPROBAR CON ANTERIORIDAD LA CORRECTITUD DE LOS DATOS
-        */
 
         //Generamos el array asociativo que necesitamos
         $infoData->setInfo();
@@ -138,27 +121,19 @@ class InfoController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Devuelve la vista con el formulario de edicion relleno
+     * con los datos del docuemento con dicho id de Cloud Firebase.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
-        /*  PASOS:
-         * 1. Verificar la sesión o el rol
-         * 2. Abrir una instancia con la base de datos
-         * 3. Leer de la coleccion el docuemnto
-         * 4. Devolver vista con los datos de dicho documento rellanos
-         */
 
         $db = $this->firebase;
 
         $documento = $db->read('info_miscelanea', $id);
 
-        //$respuesta = $db->update()
-
-        //return var_dump($documento);
         return view('informacion.edit', compact('documento'));
     }
 
@@ -174,11 +149,30 @@ class InfoController extends Controller
         //Recogemos los datos del formulario sin token
         $datosInfo = request()->except(['_token', '_method']);
 
+        //Guardamos la instancia de Firebase
+        $db = $this->firebase;
+        //Recogemos el documento a actualizar para comprobaciones
+        $documento = $db->read('info_miscelanea', $datosInfo['docID']);
+
         //Modificamos el contenido para pasar a guardar en Firebase la ruta del archivo y guardarla en local
         if($request->hasFile('foto_ppal')){
-            $datosInfo['foto_ppal'] = $request->file('foto_ppal')->store('uploads/informacion', 'public');
+            //Guardamos la ruta temporal y el nombre temporal al que le agregamos la extension
+            $pathName = $request->file('foto_ppal')->getPathname();
+            $fileName = $request->file('foto_ppal')->getFilename();
+            $fileName = $fileName . '.' . $request->file('foto_ppal')->extension();
+
+            //Guardamos la instancia de Storage
+            $storage = $this->storage;
+
+            //Borramos la foto existente del storage
+            $storage->destroy('',$documento['foto_ppal']);
+            //Subimos la nueva foto
+            $storage->upload('', $pathName, $fileName);
+
+            $datosInfo['foto_ppal'] = $fileName;
         } else {
-            $datosInfo['foto_ppal'] = null;
+            //Le paso la foto ya existente en caso de no rellenarse de nuevo
+            $datosInfo['foto_ppal'] = $documento['foto_ppal'];
         }
 
         //Creamos un objeto de Info y lo vamos rellenando de las variables del formulario
@@ -190,39 +184,38 @@ class InfoController extends Controller
             $infoData->foto_ppal = $datosInfo['foto_ppal'];
         }
 
-        /*  EN ESTE PUNTO DEBERIAMOS:
-            - COMPROBAR QUE HAY UNA SESION ACTIVA Y TIENE ROL DE ADMIN DICHO USUARIO
-            - COMPROBAR SI YA EXISTE UNA ENTRADA IGUAL EN FIRABASE
-            - COMPROBAR CON ANTERIORIDAD LA CORRECTITUD DE LOS DATOS
-        */
+        // EN ESTE PUNTO DEBERIAMOS COMPROBAR CON ANTERIORIDAD LA CORRECTITUD DE LOS DATOS¿?
 
         //Generamos el array asociativo que necesitamos
         $infoData->setInfo();
 
-        //Guardamos la instancia de Firebase
-        $db = $this->firebase;
         //Llamamos al método de la clase que inserta los datos
-        $docRef = $db->update('info_miscelanea', $id, $infoData->info);
+        $repuesta = $db->update('info_miscelanea', $id, $infoData->info);
 
         //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA EDICION
-        return var_dump($docRef);
+        return redirect('informacion');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina el docuemento con dicho id de la coleción 'info_miscelanea'
+     * de Cloud Firestore, tambien elimina la foto de Cloud Storage
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function destroy($id)
     {
         $db = $this->firebase;
+        $storage = $this->storage;
 
-        $documento = $db->delete('info_miscelanea', $id);
+        $documento = $db->read('info_miscelanea', $id);
 
-        //DEBEMOS BORRAR O MOVER LA FOTO DE 'uploads/informacion'
+        $db->delete('info_miscelanea', $id);
 
-        //return var_dump($documento);
+        $storage->destroy('', $documento['foto_ppal']);
+
+
+        //SERIA CONVENIENTE RETORNAR UNA CONFIRMACIÓN
         return redirect('informacion');
     }
 }

@@ -31,7 +31,7 @@
                     <td>{{$info['titulo']}}</td>
                     <td>{{$info['fecha']}}</td>
                     <td>{{$info['info_ppal']}}</td>
-                    <td>{{$info['foto_ppal']}}</td>
+                    <td><img src="https://firebasestorage.googleapis.com/v0/b/futurguidear.appspot.com/o/{{$info['foto_ppal']}}?generation=1586550760215511&alt=media" width="200"></td>
                     <td>
                         <a href="{{ url('informacion/' . $info->id() . '/edit') }}" class="btn btn-sm">Editar</a>
                         <form method="post" action="{{ url('informacion/' . $info->id()) }}">

@@ -13,7 +13,7 @@ class StorageController extends Controller
 
     public function __construct()
     {
-        //Iniciamos una instancia con la BD
+        //Iniciamos una instancia de Storage con Firebase
         $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
         $firebase = (new Factory)
             ->withServiceAccount($serviceAccount)
@@ -26,8 +26,28 @@ class StorageController extends Controller
     }
 
     //Funcion para subir un archivo a Storage y que devuelva la referencia
-    public function upload() {
+    //IMP:
+    // $filePath deberia contener un $_FILES['imageToUpload]['tmp_name']
+    // $filenaName deberia contener un $_FILES['imageToUpload]['name']
+    public function upload($bucketName, $filePath, $fileName) {
+        $file = fopen($filePath, 'r');
 
+        $deposito = static::$storage->getBucket($bucketName);
+        $deposito->upload($file,
+            [
+                'name' => $fileName
+                //En caso de querer visualizar las fotos de manera publica añadir lo siguiente
+                /*
+                 'acl' => [],
+                 'predefinedAcl' => 'PUBLICREAD'
+                */
+            ]
+        );
+
+        //IMP DE MOMENTO DEVOLVEMOS EL 'mediaLink' o link de descarga
+        $respuesta = $deposito->object($fileName)->info();
+
+        return $respuesta;
     }
 
     /**
@@ -37,10 +57,32 @@ class StorageController extends Controller
      */
     public function index()
     {
-        $bucket = self::$storage->bucket();
+        //PRUEBAS STORAGE
+
+        //Iniciamos una instancia de Storage con Firebase
+        $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
+        $firebase = (new Factory)
+            ->withServiceAccount($serviceAccount)
+            ->createStorage();
+        //Guardamos dicha instancia de Storage
+        $storage = $firebase->getBucket()->object('prueba.jpeg')->info();
 
 
-        return var_dump($bucket);
+
+       /* $file = file_get_contents('/Applications/MAMP/htdocs/laravel/adminPanelFG/storage/app/public/uploads/informacion/KBuM9gJ0JJOen2yR87e6J1TKEuwuKsRSu46eGPe7.jpeg');
+
+        //$deposito = $storage->bucket('info_miscelanea');
+
+       $uploadRef = $storage->upload($file,
+                [
+                    'name' => 'prueba.jpeg',
+                    'acl' => [],
+                    'predefinedAcl' => 'PUBLICREAD'
+                ]
+            );
+*/
+
+        return var_dump($storage);
     }
 
     /**
@@ -70,9 +112,9 @@ class StorageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($fileName)
     {
-        //
+
     }
 
     /**
@@ -104,8 +146,11 @@ class StorageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($bucketName, $fileName, $options = [])
     {
-        //
+        $deposito = static::$storage->getBucket($bucketName);
+
+        $objeto = $deposito->object($fileName);
+        $objeto->delete();
     }
 }

@@ -64,4 +64,4 @@ Route::resource('informacion', 'InfoController');
 
 
 //Ruta donde estamos probando Firebase
-//Route::get('firebase','InfoController@index');
+Route::get('storage','StorageController@index');
