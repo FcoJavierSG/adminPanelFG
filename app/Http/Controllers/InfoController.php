@@ -65,7 +65,7 @@ class InfoController extends Controller
          * en cuyo caso no insertaremos */
         if ($this->exist($datosInfo['titulo'], $datosInfo['fecha'], $datosInfo['info_ppal'])) {
             //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
-            printf('YA EXISTE');
+            printf('YA EXISTE DICHA INFORMACION');
         } else {
             //Modificamos el contenido para pasar a guardar en Firebase la ruta del archivo y guardarla en local
             if($request->hasFile('foto_ppal') && $request->hasFile('foto')){
@@ -104,12 +104,13 @@ class InfoController extends Controller
                 $datosInfo['foto'] = null;
             }
 
+
             //Creamos un objeto de Info y lo vamos rellenando de las variables del formulario
             $infoData = $this->informacion;
 
             //Generamos el array asociativo que necesitamos
             $infoData->setInfo(null, $datosInfo['tipo'], $datosInfo['titulo'], $datosInfo['fecha'],
-                $datosInfo['info_ppal'], $datosInfo['foto_ppal'], $datosInfo['info'], $datosInfo['foto'],$datosInfo['estado']);
+                $datosInfo['info_ppal'], $datosInfo['foto_ppal'], $datosInfo['info'], $datosInfo['foto'],null);
 
             //Llamamos al método de la clase que inserta los datos
             $db = $this->firebase;
@@ -165,44 +166,107 @@ class InfoController extends Controller
         //Recogemos los datos del formulario sin token
         $datosInfo = request()->except(['_token', '_method']);
 
+        $hayFotoPpal = $request->hasFile('foto_ppal');
+        $hayFoto = $request->hasFile('foto');
+
         //Guardamos la instancia de Firebase
         $db = $this->firebase;
         //Recogemos el documento a actualizar para comprobar si tiene una foto insertada
         $documento = $db->read('info_miscelanea', $datosInfo['docID']);
 
-        //Modificamos el contenido para pasar a guardar en Firebase la ruta del archivo y guardarla en local
-        if($request->hasFile('foto_ppal')){
-            //Guardamos la ruta temporal y el nombre temporal al que le agregamos la extension
-            $pathName = $request->file('foto_ppal')->getPathname();
-            $fileName = $request->file('foto_ppal')->getFilename();
-            $fileName = $fileName . '.' . $request->file('foto_ppal')->extension();
+        //Guardamos la instancia de Storage
+        $storage = $this->storage;
 
-            //Guardamos la instancia de Storage
-            $storage = $this->storage;
-
-            //Borramos la foto existente del storage
-            $storage->destroy('',$documento['foto_ppal']);
-            //Subimos la nueva foto
-            $storage->upload('', $pathName, $fileName);
-
-            $datosInfo['foto_ppal'] = $fileName;
+        if ($this->exist($datosInfo['titulo'], $datosInfo['fecha'], $datosInfo['info_ppal']) || $this->equal($datosInfo, $documento) && !$hayFotoPpal && !$hayFoto) {
+            //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
+            printf('YA EXISTE DICHA INFORMACION');
         } else {
-            //Le paso la foto ya existente en caso de no rellenarse de nuevo
-            $datosInfo['foto_ppal'] = $documento['foto_ppal'];
+            /*
+             * En esta estructura if elseif elseif else lo que hacemos es cubrir las distintas casuisticas
+             * de actualizacion de 'foto_ppal' y 'foto', para cada caso primeramente guardamos la ruta y nombre de archivo,
+             * de ser necesario eliminamos el existente de Storage e insertamos la nueva guardando su nombre en Cloud Firestore.
+             */
+            if ($hayFotoPpal && $hayFoto) {
+                //Guardamos la ruta temporal y el nombre temporal al que le agregamos la extension
+                $pathName = $request->file('foto_ppal')->getPathname();
+                $fileName = $request->file('foto_ppal')->getFilename();
+                $fileName = $fileName . '.' . $request->file('foto_ppal')->extension();
+
+                //Borramos la foto existente del storage
+                $storage->destroy('', $documento['foto_ppal']);
+                //Subimos la nueva foto
+                $storage->upload('', $pathName, $fileName);
+
+                $datosInfo['foto_ppal'] = $fileName;
+
+                //Guardamos la ruta temporal y el nombre temporal al que le agregamos la extension
+                $pathName = $request->file('foto')->getPathname();
+                $fileName = $request->file('foto')->getFilename();
+                $fileName = $fileName . '.' . $request->file('foto')->extension();
+
+                //Borramos la foto existente del storage
+                if (!is_null($documento['foto'])) $storage->destroy('', $documento['foto']);
+                //Subimos la nueva foto
+                $storage->upload('', $pathName, $fileName);
+
+                $datosInfo['foto'] = $fileName;
+            } else if ($hayFotoPpal) {
+                //Guardamos la ruta temporal y el nombre temporal al que le agregamos la extension
+                $pathName = $request->file('foto_ppal')->getPathname();
+                $fileName = $request->file('foto_ppal')->getFilename();
+                $fileName = $fileName . '.' . $request->file('foto_ppal')->extension();
+
+                //Borramos la foto existente del storage
+                $storage->destroy('', $documento['foto_ppal']);
+                //Subimos la nueva foto
+                $storage->upload('', $pathName, $fileName);
+
+                $datosInfo['foto_ppal'] = $fileName;
+
+                if (!is_null($documento['foto'])) {
+                    $datosInfo['foto'] = $documento['foto'];
+                } else {
+                    $datosInfo['foto'] = null;
+                }
+
+            } else if ($hayFoto) {
+                //Guardamos la ruta temporal y el nombre temporal al que le agregamos la extension
+                $pathName = $request->file('foto')->getPathname();
+                $fileName = $request->file('foto')->getFilename();
+                $fileName = $fileName . '.' . $request->file('foto')->extension();
+
+                //Borramos la foto existente del storage
+                if (!is_null($documento['foto'])) $storage->destroy('', $documento['foto']);
+                //Subimos la nueva foto
+                $storage->upload('', $pathName, $fileName);
+
+                $datosInfo['foto'] = $fileName;
+                $datosInfo['foto_ppal'] = $documento['foto_ppal'];
+            } else {
+                //Le paso la foto ya existente en caso de no rellenarse de nuevo
+                $datosInfo['foto_ppal'] = $documento['foto_ppal'];
+
+                if (!is_null($documento['foto'])) {
+                    $datosInfo['foto'] = $documento['foto'];
+                } else {
+                    $datosInfo['foto'] = null;
+                }
+            }
+
+            //Creamos un objeto de Info y lo vamos rellenando de las variables del formulario
+            $infoData = $this->informacion;
+
+            //Generamos el array asociativo que necesitamos
+            $infoData->setInfo(null, $datosInfo['tipo'], $datosInfo['titulo'], $datosInfo['fecha'],
+                $datosInfo['info_ppal'], $datosInfo['foto_ppal'], $datosInfo['info'], $datosInfo['foto'],null);
+
+            //Llamamos al método de la clase que inserta los datos
+            $repuesta = $db->update('info_miscelanea', $id, $infoData->info);
+
+            //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA EDICION
+           // return redirect('informacion');
+
         }
-
-        //Creamos un objeto de Info y lo vamos rellenando de las variables del formulario
-        $infoData = $this->informacion;
-
-        //Generamos el array asociativo que necesitamos
-        $infoData->setInfo(null, null, $datosInfo['titulo'], $datosInfo['fecha'],
-            $datosInfo['info_ppal'], $datosInfo['foto_ppal'], null, null,null);
-
-        //Llamamos al método de la clase que inserta los datos
-        $repuesta = $db->update('info_miscelanea', $id, $infoData->info);
-
-        //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA EDICION
-        return redirect('informacion');
     }
 
     /**
@@ -222,6 +286,7 @@ class InfoController extends Controller
         $db->delete('info_miscelanea', $id);
 
         if (!is_null($documento['foto_ppal'])) $storage->destroy('', $documento['foto_ppal']);
+        if (!is_null($documento['foto'])) $storage->destroy('', $documento['foto']);
 
         //SERIA CONVENIENTE RETORNAR UNA CONFIRMACIÓN
         return redirect('informacion');
@@ -253,4 +318,22 @@ class InfoController extends Controller
         return $docExiste;
     }
 
+    /**
+     * Comprueba si un documento existente y los datos pasados son iguales
+     *
+     * @param $titulo
+     * @param $fecha
+     * @param $info_ppal
+     * @return bool
+     */
+    public function equal($datosInfo, $documento){
+
+        $docExiste = false;
+
+        if($datosInfo['tipo'] == $documento['tipo'] && $datosInfo['titulo'] == $documento['titulo'] &&
+            $datosInfo['fecha'] == $documento['fecha'] && $datosInfo['info_ppal'] == $documento['info_ppal'] &&
+            $datosInfo['info'] == $documento['info']) $docExiste = true;
+
+        return $docExiste;
+    }
 }

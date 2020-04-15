@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Docencia;
+use App\Despacho;
 use Illuminate\Http\Request;
 
-class DocenciaController extends Controller
+class TutoriaController extends Controller
 {
-    protected $docencia;
+    protected $tutoria;
     protected $firebase;
 
     /**
@@ -15,9 +15,8 @@ class DocenciaController extends Controller
      * principales variables.
      */
     function __construct(){
-        $this->docencia = new Docencia();
+        $this->tutoria = new Despacho();
         $this->firebase = new FirebaseController();
-        $this->storage = new StorageController();
     }
 
     /**
@@ -30,15 +29,15 @@ class DocenciaController extends Controller
     {
         $db = $this->firebase;
 
-        $documentos = $db->read('docencia');
+        $documentos = $db->read('despacho');
 
-        //Cargamos las asignaturas disponibles
-        $asignaturas = $db->read('asignatura');
+        $tutorias = $db->read('tutoria');
+
         //Cargamos los usuarios que sean docentes
         $docentes = $db->collection('usuario')->where('rol', '=' , 1);
         $docentes = $docentes->documents();
 
-        return view('docencia.index', compact('documentos', 'asignaturas', 'docentes'));
+        return view('despacho.index', compact('documentos', 'tutorias','docentes'));
     }
 
     /**
@@ -50,13 +49,11 @@ class DocenciaController extends Controller
     {
         $db = $this->firebase;
 
-        //Cargamos las asignaturas disponibles
-        $asignaturas = $db->read('asignatura');
         //Cargamos los usuarios que sean docentes
         $docentes = $db->collection('usuario')->where('rol', '=' , 1);
         $docentes = $docentes->documents();
 
-        return view('docencia.create', compact('asignaturas', 'docentes'));
+        return view('despacho.create'));
     }
 
     /**
@@ -69,23 +66,21 @@ class DocenciaController extends Controller
     public function store(Request $request)
     {
         //Recogemos los datos del formulario sin token
-        $datosDocencia = request()->except('_token');
+        $datosTutoria = request()->except('_token');
 
         /* Comprobamos si existe un documento con mismo id_asignatura, dia_semana y tipo
          * en cuyo caso no insertaremos */
-        if ($this->exist($datosDocencia['aula'], $datosDocencia['dia_semana'], $datosDocencia['hora_inicio'])) {
+        if ($this->exist($datosTutoria['n_despacho'])) {
             //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
-            printf('YA EXISTE DOCENCIA');
+            printf('YA EXISTE ESTE DESPACHO');
         } else {
-            $docenciaData = $this->docencia;
+            $tutoriaData = $this->despacho;
 
-            $docenciaData->setDocencia($datosDocencia['id_asignatura'], $datosDocencia['docente'], $datosDocencia['tipo'],
-                                    $datosDocencia['aula'], $datosDocencia['dia_semana'],
-                                    $datosDocencia['hora_inicio'], $datosDocencia['hora_fin']);
+            $despachoData->setDespacho($datosTutoria, $datosTutoria['info_despacho'], $datosTutoria['n_despacho']);
 
             //Llamamos al método de la clase que inserta los datos
             $db = $this->firebase;
-            $docRef = $db->create('docencia', $docenciaData->docencia);
+            $docRef = $db->create('despacho', $despachoData->despacho);
 
             //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
             return var_dump($docRef);
@@ -116,15 +111,19 @@ class DocenciaController extends Controller
 
         $db = $this->firebase;
 
-        $documento = $db->read('docencia', $id);
+        $docente = $db->read('usuario', $id);
 
-        //Cargamos las asignaturas disponibles
-        $asignaturas = $db->read('asignatura');
         //Cargamos los usuarios que sean docentes
-        $docentes = $db->collection('usuario')->where('rol', '=' , 1);
-        $docentes = $docentes->documents();
+        $tutorias = $db->collection('tutoria')->where('dni', '=', $docente['dni']);
+        $tutorias = $tutorias->documents();
 
-        return view('docencia.edit', compact('documento','asignaturas', 'docentes'));
+        foreach ($tutorias as $tutoria){
+            if ($tutoria->exists()){
+                return view('tutoria.edit', compact('docente','tutorias'));
+            } else {
+                return view('tutoria.create', compact('docente'));
+            }
+        }
     }
 
 
@@ -139,26 +138,25 @@ class DocenciaController extends Controller
     public function update(Request $request, $id)
     {
         //Recogemos los datos del formulario sin token
-        $datosDocencia = request()->except(['_token', '_method']);
+        $datosDespacho = request()->except(['_token', '_method']);
 
         $db = $this->firebase;
 
-        $documento = $db->read('docencia', $datosDocencia['docID']);
+        $documento = $db->read('despacho', $datosDespacho['docID']);
 
-        if ($this->exist($datosDocencia['aula'], $datosDocencia['dia_semana'], $datosDocencia['hora_inicio']) || $this->equal($datosDocencia, $documento)) {
+        if ($this->exist($datosDespacho['n_despacho']) || $this->equal($datosDespacho, $documento)) {
             //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
             printf('YA EXISTE DICHA DOCENCIA');
         } else {
-            $docenciaData = $this->docencia;
+            $despachoData = $this->despacho;
 
-            var_dump($datosDocencia);
+            $docentesData = array($datosDespacho['1erDocente'], $datosDespacho['2oDocente'], $datosDespacho['3erDocente']);
 
-            $docenciaData->setDocencia($datosDocencia['id_asignatura'], $datosDocencia['docente'], $datosDocencia['tipo'],
-                $datosDocencia['aula'], $datosDocencia['dia_semana'],
-                $datosDocencia['hora_inicio'], $datosDocencia['hora_fin']);
+            $despachoData->setDespacho($docentesData, $datosDespacho['info_despacho'], $datosDespacho['n_despacho']);
 
             //Llamamos al método de la clase que inserta los datos
-            $docRef = $db->update('docencia', $id,$docenciaData->docencia);
+            $db = $this->firebase;
+            $docRef = $db->update('despacho', $id, $despachoData->despacho);
 
             //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
             return var_dump($docRef);
@@ -175,10 +173,10 @@ class DocenciaController extends Controller
     {
         $db = $this->firebase;
 
-        $db->delete('docencia', $id);
+        $db->delete('despacho', $id);
 
         //SERIA CONVENIENTE RETORNAR UNA CONFIRMACIÓN
-        return redirect('docencia');
+        return redirect('despacho');
     }
 
     /**
@@ -189,12 +187,10 @@ class DocenciaController extends Controller
      * @param $tipo
      * @return bool
      */
-    public function exist($aula, $diaSemana, $horaInicio){
+    public function exist($nDespacho){
         $db = $this->firebase;
-        $consulta = $db->collection('docencia')
-            ->where('aula', '=', $aula)
-            ->where('dia_semana', '=', $diaSemana)
-            ->where('hora_inicio', '=', $horaInicio);
+        $consulta = $db->collection('despacho')
+            ->where('n_despacho', '=', $nDespacho);
 
         $documentos = $consulta->documents();
 
@@ -214,14 +210,13 @@ class DocenciaController extends Controller
      * @param $info_ppal
      * @return bool
      */
-    public function equal($datosDocencia, $documento){
+    public function equal($datosDespacho, $documento){
 
         $docEqual = false;
 
-        if($datosDocencia['id_asignatura'] == $documento['id_asignatura'] && $datosDocencia['docente'] == $documento['docente'] &&
-            $datosDocencia['tipo'] == $documento['tipo'] && $datosDocencia['aula'] == $documento['aula'] &&
-            $datosDocencia['dia_semana'] == $documento['dia_semana'] && $datosDocencia['hora_inicio'] == $documento['hora_inicio'] &&
-            $datosDocencia['hora_fin'] == $documento['hora_fin']  ) $docEqual = true;
+        if($datosDespacho['1erDocente'] == $documento['docente'][0] && $datosDespacho['2oDocente'] == $documento['docente'][1] &&
+            $datosDespacho['3erDocente'] == $documento['docente'][2] && $datosDespacho['info_despacho'] == $documento['info_despacho']
+            && $datosDespacho['n_despacho'] == $documento['n_despacho']) $docEqual = true;
 
         return $docEqual;
     }

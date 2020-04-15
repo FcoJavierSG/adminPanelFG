@@ -4,7 +4,7 @@ namespace App;
 
 //use Illuminate\Database\Eloquent\Model;
 
-class Info /*extends Model*/
+class Info
 {
     //JSON que contiene la informacion lista para usar
     public $info;

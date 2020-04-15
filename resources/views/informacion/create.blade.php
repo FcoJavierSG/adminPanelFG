@@ -35,13 +35,6 @@
                             </div-->
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="foto_ppal">{{'Foto principal'}}</label>
-                            <input type="file" class="form-control" name="foto_ppal" id="foto_ppal" placeholder="" required>
-                            <!--div class="invalid-feedback">
-                                    Seleccione una foto principal.
-                            </div-->
-                        </div>
-                        <div class="col-md-4 mb-3">
                             <label for="tipo">{{'Tipo de información'}}</label>
                             <select class="form-control" name="tipo" id="tipo">
                                 <option>Seleccione un tipo de información</option>
@@ -51,10 +44,17 @@
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
+                            <label for="foto_ppal">{{'Foto principal'}}</label>
+                            <input type="file" class="form-control" name="foto_ppal" id="foto_ppal" placeholder="" required>
+                            <!--div class="invalid-feedback">
+                                    Seleccione una foto principal.
+                            </div-->
+                        </div>
+                        <!--div class="col-md-4 mb-3">
                             <label for="estado" >{{'Estado'}}</label>
                             <br>
                             <input type="checkbox" class="form-control" value="1" name="estado" id="estado" checked data-toggle="toggle" data-on="Público" data-off="Privado" data-onstyle="danger" >
-                        </div>
+                        </div-->
                         <hr class="col-md-12 mb-4">
                         <div class="col-md-12 mb-3">
                             <h4 class="h4">Opcional</h4>
