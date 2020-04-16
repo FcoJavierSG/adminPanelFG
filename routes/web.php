@@ -13,18 +13,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*  NOTAS IMP: PODEMOS UTILIZAR CUALQUIER TIPO DE 'VERBO' HTTP PARA LA CREACION DE RUTAS,
- *  DE IGUAL MANERA PODREMOS UTILIZAR UNA MISMA RUTA PARA DIFERENTES FINES LEER (GET), INSERTAR (POST)...
- * */
-
-//Ruta para la página de inicio
-//IMP: DEBEREMOS REDIGIR EN EL FUTURO DESDE ESTA RUTA A LA DE LOGIN SI NO EXISTE UN SESION ACTIVA
-Route::get('/', 'PagesController@index')->name('inicio');
-
-//Ruta para el login
-Route::get('login', function () {
+Route::get('/', function (){
     return view('login');
-});
+})->name('inicio');
+//Ruta para el login
+Route::post('login', 'AuthController@login')->name('login');
+
+Route::get('logout', 'AuthController@logout')->name('logout');
+
+Route::get('inicio', function (){
+    return view('inicio');
+})->name('inicio');
 
 /*
  * RUTAS PARA LAS PAGINAS DE DOCENCIA
@@ -47,4 +46,4 @@ Route::resource('informacion', 'InfoController');
 
 
 //Ruta donde estamos probando Firebase
-Route::get('storage','FirebaseController@index');
+Route::get('auth','AuthController@index');

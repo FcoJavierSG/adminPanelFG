@@ -9,7 +9,7 @@
     <form method="get" action="{{ url('informacion/create') }}">
         {{ csrf_field() }}
         {{ method_field('GET') }}
-        <button type="submit" class="btn btn btn-danger"> Nueva información </button>
+        <button type="submit" class="btn btn btn-secondary"> Nueva información </button>
     </form>
     <br>
     <div class="table-responsive">
@@ -33,11 +33,11 @@
                     <td>{{$info['info_ppal']}}</td>
                     <td><img src="https://firebasestorage.googleapis.com/v0/b/futurguidear.appspot.com/o/{{$info['foto_ppal']}}?generation=1586550760215511&alt=media" width="150"></td>
                     <td>
-                        <a href="{{ url('informacion/' . $info->id() . '/edit') }}" class="btn btn-sm">Editar</a>
-                        <form method="post" action="{{ url('informacion/' . $info->id()) }}">
+                        <a href="{{ url('informacion/' . $info->id() . '/edit') }}" <button class="btn btn-sm btn-outline-secondary" >Editar</button></a>
+                        <form method="post" action="{{ url('informacion/' . $info->id()) }}" style="float: right">
                             {{ csrf_field() }}
                             {{ method_field('DELETE') }}
-                            <button type="submit" onclick="return confirm('¿Estas seguro de que desea eliminar dicha entrada?')" class="btn btn-sm">Eliminar</button>
+                            <button type="submit" onclick="return confirm('¿Estas seguro de que desea eliminar dicha entrada?')" class="btn btn-sm btn-danger">Eliminar</button>
                         </form>
                     </td>
                 </tr>

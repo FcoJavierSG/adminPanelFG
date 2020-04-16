@@ -37,7 +37,7 @@ class TutoriaController extends Controller
         $docentes = $db->collection('usuario')->where('rol', '=' , 1);
         $docentes = $docentes->documents();
 
-        return view('despacho.index', compact('documentos', 'tutorias','docentes'));
+        return view('tutoria.index', compact('documentos', 'tutorias','docentes'));
     }
 
     /**
@@ -49,11 +49,13 @@ class TutoriaController extends Controller
     {
         $db = $this->firebase;
 
-        //Cargamos los usuarios que sean docentes
-        $docentes = $db->collection('usuario')->where('rol', '=' , 1);
-        $docentes = $docentes->documents();
+        $docente = request()->except('_token');
 
-        return view('despacho.create'));
+        if (isset($docente['id'])){
+            //Cargamos los usuarios que sean docentes
+            $docente = $db->read('usuario', $docente['id']);
+            return view('tutoria.create', compact('docente'));
+        }
     }
 
     /**
@@ -68,22 +70,29 @@ class TutoriaController extends Controller
         //Recogemos los datos del formulario sin token
         $datosTutoria = request()->except('_token');
 
+        //Llamamos al método de la clase que inserta los datos
+        $db = $this->firebase;
+
         /* Comprobamos si existe un documento con mismo id_asignatura, dia_semana y tipo
          * en cuyo caso no insertaremos */
-        if ($this->exist($datosTutoria['n_despacho'])) {
+        if ($this->exist($datosTutoria)) {
             //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
-            printf('YA EXISTE ESTE DESPACHO');
+            printf('YA EXISTE ESTA TUTORIA');
         } else {
-            $tutoriaData = $this->despacho;
+            $tutoriaData = $this->tutoria;
 
-            $despachoData->setDespacho($datosTutoria, $datosTutoria['info_despacho'], $datosTutoria['n_despacho']);
+            $tutoriaData->setTutoria($datosTutoria['docente'], $datosTutoria['semestre'], $datosTutoria['dia_semana'],
+                $datosTutoria['hora_inicio'], $datosTutoria['hora_fin']);
 
-            //Llamamos al método de la clase que inserta los datos
-            $db = $this->firebase;
-            $docRef = $db->create('despacho', $despachoData->despacho);
+            $db->create('tutoria', $tutoriaData->tutoria);
+
+
+            $docente = $db->read('usuario', $datosTutoria['id']);
+            $tutorias = $db->collection('tutoria')->where('dni', '=', $datosTutoria['docente']);
+            $tutorias = $tutorias->documents();
 
             //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
-            return var_dump($docRef);
+            return view('tutoria.edit', compact('docente','tutorias'));
         }
 
     }
@@ -120,10 +129,10 @@ class TutoriaController extends Controller
         foreach ($tutorias as $tutoria){
             if ($tutoria->exists()){
                 return view('tutoria.edit', compact('docente','tutorias'));
-            } else {
-                return view('tutoria.create', compact('docente'));
             }
         }
+
+        return view('tutoria.create', compact('docente'));
     }
 
 
@@ -138,28 +147,32 @@ class TutoriaController extends Controller
     public function update(Request $request, $id)
     {
         //Recogemos los datos del formulario sin token
-        $datosDespacho = request()->except(['_token', '_method']);
+        $datosTutoria = request()->except('_token');
 
         $db = $this->firebase;
 
-        $documento = $db->read('despacho', $datosDespacho['docID']);
+        $docente = $db->read('usuario', $datosTutoria['id']);
 
-        if ($this->exist($datosDespacho['n_despacho']) || $this->equal($datosDespacho, $documento)) {
+        //---
+
+        /* Comprobamos si existe un documento con mismo id_asignatura, dia_semana y tipo
+         * en cuyo caso no insertaremos */
+        if ($this->exist($datosTutoria)) {
             //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
-            printf('YA EXISTE DICHA DOCENCIA');
+            printf('YA EXISTE ESTA TUTORIA');
         } else {
-            $despachoData = $this->despacho;
+            $tutoriaData = $this->tutoria;
 
-            $docentesData = array($datosDespacho['1erDocente'], $datosDespacho['2oDocente'], $datosDespacho['3erDocente']);
+            $tutoriaData->setTutoria($datosTutoria['docente'], $datosTutoria['semestre'], $datosTutoria['dia_semana'],
+                $datosTutoria['hora_inicio'], $datosTutoria['hora_fin']);
 
-            $despachoData->setDespacho($docentesData, $datosDespacho['info_despacho'], $datosDespacho['n_despacho']);
+            $docRef = $db->update('tutoria', $id, $tutoriaData->tutoria);
 
-            //Llamamos al método de la clase que inserta los datos
-            $db = $this->firebase;
-            $docRef = $db->update('despacho', $id, $despachoData->despacho);
+            $tutorias = $db->collection('tutoria')->where('dni', '=', $datosTutoria['docente']);
+            $tutorias = $tutorias->documents();
 
-            //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
-            return var_dump($docRef);
+
+            return view('tutoria.edit', compact('docente','tutorias'));
         }
     }
 
@@ -173,7 +186,7 @@ class TutoriaController extends Controller
     {
         $db = $this->firebase;
 
-        $db->delete('despacho', $id);
+        $db->delete('tutoria', $id);
 
         //SERIA CONVENIENTE RETORNAR UNA CONFIRMACIÓN
         return redirect('despacho');
@@ -187,10 +200,14 @@ class TutoriaController extends Controller
      * @param $tipo
      * @return bool
      */
-    public function exist($nDespacho){
+    public function exist($datosTutoria){
         $db = $this->firebase;
-        $consulta = $db->collection('despacho')
-            ->where('n_despacho', '=', $nDespacho);
+        $consulta = $db->collection('tutoria')
+            ->where('docente', '=', $datosTutoria['docente'])
+            ->where('dia_semana', '=', $datosTutoria['dia_semana'])
+            ->where('semestre', '=', $datosTutoria['semestre'])
+            ->where('hora_inicio', '=', $datosTutoria['hora_inicio'])
+            ->where('hora_fin', '=', $datosTutoria['hora_fin']);
 
         $documentos = $consulta->documents();
 

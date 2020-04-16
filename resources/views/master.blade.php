@@ -1,4 +1,10 @@
-<!---->
+<?php
+session_start();
+if (!isset($_SESSION['active']) || $_SESSION['active'] != true){
+    header('Location:' . '/', true, 301);
+    exit();
+}
+?>
 <!doctype html>
 <html lang="es">
 <head>
@@ -7,13 +13,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <link rel="icon" href="{!! asset('favicon.ico') !!}" type="image/x-icon"/>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{!! asset('css/bootstrap.min.css') !!}">
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="{!! asset('css/futurguide.css') !!}" >
 
     <title> @yield('title') </title>
-</head>
+
 <body>
 
 <div class="container-fluid">

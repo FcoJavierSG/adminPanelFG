@@ -19,7 +19,7 @@ class Despacho
 
     public function setTutoria($docente = null, $semestre = null, $dia_semana = null, $hora_inicio = null, $hora_fin = null){
         $this->tutoria = array(
-            'docente' => $docente,
+            'dni' => $docente,
             'semestre' => $semestre,
             'dia_semana' => $dia_semana,
             'hora_inicio' => $hora_inicio,

@@ -2,17 +2,19 @@
 @section('title', 'Despacho | FuturguideAR')
 @section('seccion')
     <br>
-    <h1 class="h2">Despacho</h1>
+    <div class="py-3 container">
+        <h1 class="h2">Despachos</h1>
+        <br>
+        <form method="get" action="{{ url('despacho/create') }}">
+            {{ csrf_field() }}
+            {{ method_field('GET') }}
+            <button type="submit" class="btn btn btn-secondary"> Añadir despacho </button>
+        </form>
+    </div>
     <br>
-    <form method="get" action="{{ url('despacho/create') }}">
-        {{ csrf_field() }}
-        {{ method_field('GET') }}
-        <button type="submit" class="btn btn btn-secondary"> Añadir despacho </button>
-    </form>
-    <br>
-    <div class="table-responsive">
+    <div class="container table-responsive">
     @foreach($documentos as $despacho)
-        <h3 class="h4">{{'D' . $despacho['n_despacho'] }}</h3>
+        <h3 class="h4">{{'nº ' . $despacho['n_despacho'] }}</h3>
         <table class="table table-striped table-sm">
             <thead>
             <tr>
@@ -20,8 +22,8 @@
                 <th>Departamento</th>
                 <th>Docente</th>
                 <th>Correo</th>
-                <th>1er Semestre</th>
-                <th>2º Semestre</th>
+{{--                <th>1er Semestre</th>--}}
+{{--                <th>2º Semestre</th>--}}
                 <th>Acciones</th>
             </tr>
             </thead>
@@ -32,15 +34,17 @@
                         <td>{{$docente['departamento']}}</td>
                         <td>{{$docente['nombre'] . ' ' . $docente['apellidos'][0] . ' ' .$docente['apellidos'][1]}}</td>
                         <td>{{$docente['correo']}}</td>
-                        @foreach($tutorias as $tutoria)
-                        @if($docente['dni'] == $tutoria['dni'] && $tutoria['semestre'] == 1)
-                            <td>{{$tutoria['dia_semana'] . ': ' . $tutoria['hora_inicio'] . '-' . $tutoria['hora_fin']}}</td>
-                        @elseif($docente['dni'] == $tutoria['dni'] && $tutoria['semestre'] == 2)
-                            <td>{{$tutoria['dia_semana'] . ': ' . $tutoria['hora_inicio'] . '-' . $tutoria['hora_fin']}}</td>
-                        @else
-                            <td>No existe tutoría</td>
-                        @endif
-                        @endforeach
+{{--                        @foreach($tutorias as $tutoria)--}}
+{{--                            @if($tutoria->exists())--}}
+{{--                                @if($docente['dni'] == $tutoria['dni'] && $tutoria['semestre'] == 1)--}}
+{{--                                        <td>{{$tutoria['dia_semana'] . ': ' . $tutoria['hora_inicio'] . '-' . $tutoria['hora_fin']}}</td>--}}
+{{--                                @elseif($docente['dni'] == $tutoria['dni'] && $tutoria['semestre'] == 2)--}}
+{{--                                        <td>{{$tutoria['dia_semana'] . ': ' . $tutoria['hora_inicio'] . '-' . $tutoria['hora_fin']}}</td>--}}
+{{--                               --}}{{-- @elseif()--}}
+{{--                                    <td>{{'No existe tutoria'}}</td>--}}
+{{--                                @endif--}}
+{{--                            @endif--}}
+{{--                        @endforeach--}}
                         <td>
                             <a href="{{ url('tutoria/' . $docente->id() . '/edit') }}"><button  class="btn btn-sm btn-secondary">Gestionar tutorías</button></a>
                         </td>

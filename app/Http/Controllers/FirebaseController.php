@@ -40,6 +40,7 @@ class FirebaseController extends Controller
             ->withDatabaseUri('https://futurguide.firebaseio.com/')->createFirestore();
         //Guardamos dicha instancia
         static::$db = $firebase->database();
+
     }
 
     /*
@@ -71,7 +72,7 @@ class FirebaseController extends Controller
     public function create($collection, $data){
         $docRef = self::$db->collection($collection);
         $docRef->add($data);
-        printf('Creado nuevo documento en ' . $collection . PHP_EOL);
+       // printf('Creado nuevo documento en ' . $collection . PHP_EOL);
         return json_encode($docRef);
     }
 
@@ -103,7 +104,7 @@ class FirebaseController extends Controller
     public function update($collection, $id, $data){
         $docRef = self::$db->collection($collection)->document($id);
         $docRef->set($data);
-        printf('Editado de la coleccion ' . $collection . ' el documento con id: ' . $id . PHP_EOL);
+        //printf('Editado de la coleccion ' . $collection . ' el documento con id: ' . $id . PHP_EOL);
     }
 
     /**

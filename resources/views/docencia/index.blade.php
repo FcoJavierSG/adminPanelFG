@@ -4,19 +4,16 @@
     <br>
     <h1 class="h2">Docencia</h1>
     <br>
-    <h2 class="h3">Contenido</h2>
-    <br>
     <form method="get" action="{{ url('docencia/create') }}">
         {{ csrf_field() }}
         {{ method_field('GET') }}
-        <button type="submit" class="btn btn btn-danger"> Añadir docencia </button>
+        <button type="submit" class="btn btn-secondary"> Añadir docencia </button>
     </form>
     <br>
     <div class="table-responsive">
         <table class="table table-striped table-sm">
             <thead>
             <tr>
-                <!--th>#id</th-->
                 <th>Titulación</th>
                 <th>Asignatura</th>
                 <th>Curso</th>
@@ -50,11 +47,11 @@
                     <td>{{$docencia['hora_inicio'] . '-' . $docencia['hora_fin']}}</td>>
                     <td>{{$docencia['tipo']}}</td>
                     <td>
-                        <a href="{{ url('docencia/' . $docencia->id() . '/edit') }}" class="btn btn-sm">Editar</a>
-                        <form method="post" action="{{ url('docencia/' . $docencia->id()) }}">
+                        <a href="{{ url('docencia/' . $docencia->id() . '/edit') }}" ><button class="btn btn-sm btn-outline-secondary">Editar</button></a>
+                        <form method="post" action="{{ url('docencia/' . $docencia->id()) }}" style="float: right">
                             {{ csrf_field() }}
                             {{ method_field('DELETE') }}
-                            <button type="submit" onclick="return confirm('¿Estas seguro de que desea eliminar dicha entrada?')" class="btn btn-sm">Eliminar</button>
+                            <button type="submit" onclick="return confirm('¿Estas seguro de que desea eliminar dicha entrada?')" class="btn btn-sm btn-danger">Eliminar</button>
                         </form>
                     </td>
                 </tr>

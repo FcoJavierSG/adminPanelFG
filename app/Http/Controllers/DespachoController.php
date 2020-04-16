@@ -85,7 +85,7 @@ class DespachoController extends Controller
             $docRef = $db->create('despacho', $despachoData->despacho);
 
             //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
-            return var_dump($docRef);
+            return redirect('despacho');
         }
 
     }
@@ -140,7 +140,10 @@ class DespachoController extends Controller
 
         $documento = $db->read('despacho', $datosDespacho['docID']);
 
-        if ($this->exist($datosDespacho['n_despacho']) || $this->equal($datosDespacho, $documento)) {
+
+        //REVISAR CONDICION YA QUE SI SE MODIFICA EL NUMERO Y LOS DATOS NO DEBERIA DEJARNOS INSERTAR
+        // EN CASO QUE CONCUERDE CON OTRO DESPACHO
+        if ($this->exist($datosDespacho['n_despacho']) && $this->equal($datosDespacho, $documento)) {
             //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
             printf('YA EXISTE DICHA DOCENCIA');
         } else {
@@ -155,7 +158,7 @@ class DespachoController extends Controller
             $docRef = $db->update('despacho', $id, $despachoData->despacho);
 
             //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
-            return var_dump($docRef);
+            return redirect('despacho');
         }
     }
 
@@ -170,6 +173,8 @@ class DespachoController extends Controller
         $db = $this->firebase;
 
         $db->delete('despacho', $id);
+
+        //IMPORTANTE ¿TENER EN CUENTA LA ELIMINACION DE TODAS LAS TUTORIAS ASOCIADAS A LOS DOCENTES?
 
         //SERIA CONVENIENTE RETORNAR UNA CONFIRMACIÓN
         return redirect('despacho');
