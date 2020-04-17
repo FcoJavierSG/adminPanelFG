@@ -117,7 +117,7 @@ class InfoController extends Controller
             $docRef = $db->create('info_miscelanea', $infoData->info);
 
             //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
-            return var_dump($docRef);
+            return redirect('informacion');
         }
     }
 
@@ -155,7 +155,7 @@ class InfoController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza los datos de un documento con $id de la de coleccion 'info_miscelanea'
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -265,7 +265,7 @@ class InfoController extends Controller
 
             //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA EDICION
            // return redirect('informacion');
-
+            return redirect('informacion');
         }
     }
 

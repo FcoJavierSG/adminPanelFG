@@ -9,7 +9,7 @@
     <form method="get" action="{{ url('informacion/create') }}">
         {{ csrf_field() }}
         {{ method_field('GET') }}
-        <button type="submit" class="btn btn btn-secondary"> Nueva información </button>
+        <button type="submit" class="btn btn btn-secondary"> Añadir información </button>
     </form>
     <br>
     <div class="table-responsive">

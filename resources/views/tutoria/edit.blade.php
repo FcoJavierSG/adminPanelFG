@@ -1,21 +1,22 @@
 @extends('master')
 @section('title', 'Gestion de tutorías | FuturguideAR')
 @section('seccion')
-    <br>
-    <h1 class="h2">{{'Tutorías de ' . $docente['nombre'] .' '. $docente['apellidos'][0] . ' '. $docente['apellidos'][1]}}</h1>
-    <br>
-    <form method="get" action="{{ url('tutoria/create') }}">
-        {{ csrf_field() }}
-        {{ method_field('GET') }}
-        <input type="hidden" name="id" id="id" value="{{$docente->id()}}">
-        <button type="submit" class="btn btn btn-secondary"> Añadir tutoría </button>
-    </form>
     <div class="container">
+        <br>
+        <h1 class="h2">{{'Tutorías de ' . $docente['nombre'] .' '. $docente['apellidos'][0] . ' '. $docente['apellidos'][1]}}</h1>
+        <br>
+        <form method="get" action="{{ url('tutoria/create') }}">
+            {{ csrf_field() }}
+            {{ method_field('GET') }}
+            <input type="hidden" name="id" id="id" value="{{$docente->id()}}">
+            <button type="submit" class="btn btn btn-secondary"> Añadir tutoría </button>
+        </form>
+        <br>
         <div class="row">
             @foreach($tutorias as $tutoria)
             <div class="col-md-12 order-md-1">
 {{--                <h4 class="mb-3">{{'Semestre ' . $tutoria['semestre'].'º'}}</h4>--}}
-                <form action="{{ url('tutoria/' . $tutoria->id()) }}" method="post" class="needs-validation" novalidate>
+                <form action="{{ url('tutoria/' . $tutoria->id()) }}" method="post" class="was-validated">
                     {{ csrf_field() }}
                     {{ method_field('PATCH') }}
                     <input type="hidden" name="id" id="id" value="{{$docente->id()}}">
@@ -24,16 +25,16 @@
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <label for="semestre">{{'Semestre'}}</label>
-                            <select class="form-control" name="semestre" id="semestre" required>
-                                <option>Seleccione un día de la semana</option>
+                            <select class="custom-select form-control is-invalid" name="semestre" id="semestre" required>
+                                <option value="">Seleccione un día de la semana</option>
                                 <option value="1" @if($tutoria['semestre'] == '1') {{('selected="selected"')}} @endif >1er Semestre</option>
                                 <option value="2" @if($tutoria['semestre'] == '2') {{('selected="selected"')}} @endif>2º Semestre</option>
                             </select>
                         </div>
                         <div class="col-md-3 mb-3">
                             <label for="dia_semana">{{'Día de la semana'}}</label>
-                            <select class="form-control" name="dia_semana" id="dia_semana" required>
-                                <option>Seleccione un día de la semana</option>
+                            <select class="custom-select form-control is-invalid" name="dia_semana" id="dia_semana" required>
+                                <option value="">Seleccione un día de la semana</option>
                                 <option value="Lunes" @if($tutoria['dia_semana'] == 'Lunes') {{('selected="selected"')}} @endif>Lunes</option>
                                 <option value="Martes" @if($tutoria['dia_semana'] == 'Martes') {{('selected="selected"')}} @endif>Martes</option>
                                 <option value="Miércoles" @if($tutoria['dia_semana'] == 'Miércoles') {{('selected="selected"')}} @endif>Miércoles</option>

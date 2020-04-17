@@ -12,9 +12,15 @@ use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 
 class AuthController extends Controller
 {
+    /**
+     * Variable donde se almacena una instancia de Firebase Authentication
+     */
     protected $auth;
 
-   public function __construct(){
+    /**
+     * Constructor por defecto de la clase, en donde inicializamos $auth
+     */
+    public function __construct(){
        //Iniciamos una instancia con la BD
        $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
        $factory = (new Factory)
@@ -22,36 +28,12 @@ class AuthController extends Controller
            ->withDatabaseUri('https://futurguide.firebaseio.com/')->createAuth();
 
        $this->auth = $factory;
-   }
+    }
 
-   public function index(){
-       $auth = $this->auth;
-
-       $idToken = $auth->signInWithEmailAndPassword('fransg98@correo.ugr.es', '123456')->idToken();
-
-       try {
-           $verifiedToken = $auth->verifyIdToken($idToken);
-       } catch (\InvalidArgumentException $e){
-           echo 'The token could not be parsed: '.$e->getMessage();
-       } catch (InvalidToken $e) {
-           echo 'The token is invalid: '.$e->getMessage();
-       }
-
-       $uid = $verifiedToken->getClaim('sub');
-       $user = $auth->getUser($uid);
-
-       var_dump(isset($user));
-/*
-       $auth->revokeRefreshTokens($uid);
-
-       try{
-            $verifiedToken = $auth->verifyIdToken($idToken, 'true');
-       }catch (RevokedIdToken $e){
-            echo $e->getMessage();
-       }
-*/
-   }
-
+   /**
+    * Funcion para loguearnos con Firebase y crear variables de sesión que controlaremos en nuestro panel
+    *
+    */
    public function login()
    {
        $auth = $this->auth;
@@ -91,12 +73,16 @@ class AuthController extends Controller
 
        } catch (Auth\SignIn\FailedToSignIn $e) {
            return back()
-               ->withErrors(['email' => 'Los datos introducidos no concuerdan con los de ningun admin'])
+               ->withErrors(['email' => 'Los datos no coinciden con los de ningún admin'])
                ->withInput(request(['email']));
        }
 
    }
 
+
+   /**
+    * Funcion para cerrar la sessión
+    */
    public function logout(){
        session_start();
        unset($_SESSION['active']);

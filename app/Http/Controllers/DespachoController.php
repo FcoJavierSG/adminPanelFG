@@ -20,8 +20,8 @@ class DespachoController extends Controller
     }
 
     /**
-     * Lee de Cloud Firestore todos los documentos de 'docencia'
-     * y los devuelve junto con la vista principal de docencia
+     * Lee de Cloud Firestore todos los documentos de 'despacho'
+     * y los devuelve junto con la vista principal de despacho
      *
      * @return \Illuminate\View\View
      */
@@ -124,7 +124,7 @@ class DespachoController extends Controller
 
 
     /**
-     * Actualiza un documento de la coleccion 'docencia' con dicho id
+     * Actualiza un documento de la coleccion 'despacho' con dicho id
      * a partir de los datos de un formulario
      *
      * @param  \Illuminate\Http\Request  $request
@@ -163,7 +163,7 @@ class DespachoController extends Controller
     }
 
     /**
-     * Elimina el docuemento con dicho id de la coleción 'docencia' de Cloud Firestore
+     * Elimina el documento con dicho id de la coleción 'despacho' de Cloud Firestore
      *
      * @param  int  $id
      * @return \Illuminate\View\View
@@ -181,7 +181,7 @@ class DespachoController extends Controller
     }
 
     /**
-     * Comprueba la existencia de una entrada en 'docencia'
+     * Comprueba la existencia de una entrada en 'despacho'
      *
      * @param $idAsignatura
      * @param $diaSemana
@@ -204,7 +204,7 @@ class DespachoController extends Controller
     }
 
     /**
-     * Comprueba la existencia de una entrada en 'info_miscelanea'
+     * Comprueba la existencia de una entrada igual en 'despacho'
      *
      * @param $titulo
      * @param $fecha

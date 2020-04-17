@@ -16,6 +16,8 @@ if (!isset($_SESSION['active']) || $_SESSION['active'] != true){
     <link rel="icon" href="{!! asset('favicon.ico') !!}" type="image/x-icon"/>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{!! asset('css/bootstrap.min.css') !!}">
+    <!-- FontAwesomw CSS -->
+    <link rel="stylesheet" href="{!! asset('css/all.min.css') !!}">
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="{!! asset('css/futurguide.css') !!}" >
 

@@ -9,11 +9,10 @@ html, body {
 
 body {
     overflow: auto;
-    /*
     display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
-    align-items: center;*/
+    align-items: center;
     /*padding-top: 40px;
     padding-bottom: 40px;*/
     padding: 0;
@@ -21,10 +20,20 @@ body {
     background-color: #D8D9DA;
 }
 
+/* Estilos de los btn */
+
 .btn-danger {
     background-color: #b3001b;
     border-color: #b3001b;
 }
+
+.btn-secondary {
+    background-color: #D8D9DA;
+    border-color: #D8D9DA;
+    color: #535355;
+}
+
+/* Estilos de los form */
 
 .form-signin {
     width: 100%;
@@ -112,8 +121,7 @@ body {
 }
 
 
-/* Estilos del sidebar
---------------------------------------------------- */
+/* Estilos del sidebar */
 #sidebar-wrapper {
     min-height: 100vh;
     margin-left: -6rem;
@@ -125,7 +133,6 @@ body {
 
 #sidebar-wrapper .sidebar-heading {
     text-align: center;
-
     font-size: 1.2rem;
     width: 5rem;
     background: #b3001b;
@@ -135,8 +142,48 @@ body {
     width: 5rem;
 }
 
+.bg-light{
+    text-align: center;
+    background-color: #D8D9DA !important;
+}
+
+a.bg-light:hover{
+    background-color: #FFFFFF !important;
+}
+
+#sidebarlink span{
+    font-size: 1.2rem;
+}
+
+#sidebarlink {
+    font-size: 0.8rem;
+}
+
+/* Estilos del navbar */
+
+#navbar-wrapper {
+    background-color: #D8D9DA;
+}
+
+#menu-toggle {
+    background-color: #D8D9DA;
+    border-color: #535355;
+    color: #535355;
+}
+
+.nav-link {
+    color: #535355 !important;
+}
+
+/* Estilo del contenido de la página */
+
 #page-content-wrapper {
+    background-color: #FFFFFF;
     min-width: 190vw;
+}
+
+.jumbotron {
+    background-color: #D8D9DA !important;
 }
 
 #wrapper.toggled #sidebar-wrapper {

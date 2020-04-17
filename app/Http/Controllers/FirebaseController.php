@@ -43,22 +43,12 @@ class FirebaseController extends Controller
 
     }
 
-    /*
-    public function index(){
+
+    /*public function index(){
         //PRUEBAS
-        $snapshot = static::$db->collection('info_miscelanea')->where('titulo', '=', 'pruebaStorage')
-            ->where('fecha', '=', '11/4/2020')
-            ->where('info_ppal', '=', 'storage');
+        $snapshot = static::$db;
 
-        $snapshot = $snapshot->documents();
-
-        foreach ($snapshot as $user) {
-            if ($user->exists()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        var_dump($snapshot);
         //Devolvemos la instancia de Firestore
         //return static::$db;
     }*/
@@ -114,7 +104,7 @@ class FirebaseController extends Controller
     public function delete($collection, $id){
         $docRef = self::$db->collection($collection)->document($id);
         $docRef->delete();
-        printf('Eliminado  de la coleccion ' . $collection . ' el documento con id ' . $id . PHP_EOL);
+       // printf('Eliminado  de la coleccion ' . $collection . ' el documento con id ' . $id . PHP_EOL);
     }
 
     /**

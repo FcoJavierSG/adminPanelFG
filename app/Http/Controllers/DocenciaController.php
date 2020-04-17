@@ -88,7 +88,7 @@ class DocenciaController extends Controller
             $docRef = $db->create('docencia', $docenciaData->docencia);
 
             //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
-            return var_dump($docRef);
+            return redirect('docencia');
         }
 
     }
@@ -161,7 +161,7 @@ class DocenciaController extends Controller
             $docRef = $db->update('docencia', $id,$docenciaData->docencia);
 
             //DEBEMOS CAMBIAR ESTA RESPUESTA POR UNA VISTA DONDE SE CONFIRME LA INSERCCION
-            return var_dump($docRef);
+            return redirect('docencia');
         }
     }
 
@@ -184,9 +184,9 @@ class DocenciaController extends Controller
     /**
      * Comprueba la existencia de una entrada en 'docencia'
      *
-     * @param $idAsignatura
+     * @param $aula
      * @param $diaSemana
-     * @param $tipo
+     * @param $horaInicio
      * @return bool
      */
     public function exist($aula, $diaSemana, $horaInicio){
@@ -207,11 +207,11 @@ class DocenciaController extends Controller
     }
 
     /**
-     * Comprueba la existencia de una entrada en 'info_miscelanea'
+     * Comprueba la existencia de una entrada igual en 'docencia'
      *
-     * @param $titulo
-     * @param $fecha
-     * @param $info_ppal
+     * @param $datosDocencia
+     * @param $documento
+     *
      * @return bool
      */
     public function equal($datosDocencia, $documento){

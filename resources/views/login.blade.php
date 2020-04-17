@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (isset($_SESSION['active'])){
+    header('Location:' . '/inicio', true, 301);
+    exit();
+}
+?>
 <!doctype html>
 <html lang="es">
 <head>
@@ -25,6 +32,7 @@
     <div class="form-label-group {{ $errors->has('email') ? 'has-error' : '' }}">
         <input type="email" name="email" id="email" class="form-control" placeholder="Correo de administrador" value="{{ old('email') }}" required autofocus>
         <label for="email">Correo de administrador</label>
+        <div class="invalid-feedback">Introduce un correo electrónico</div>
         {!! $errors->first('email', '<span class="help-block">:message</span>') !!}
     </div>
 

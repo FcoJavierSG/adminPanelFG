@@ -9,40 +9,41 @@
         <div class="row">
             <div class="col-md-12 order-md-1">
                 <h4 class="mb-3">Datos obligatorios</h4>
-                <form action="{{ url('informacion/' . $documento->id()) }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <form action="{{ url('informacion/' . $documento->id()) }}" method="post" enctype="multipart/form-data" class="was-validated">
                     {{ csrf_field() }}
                     {{ method_field('PATCH')  }}
                     <input type="hidden" name="docID" id="docID" value="{{$documento->id()}}">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="titulo">{{'Titulo'}}</label>
-                            <input type="text" class="form-control" name="titulo" id="titulo" placeholder="" value="{{$documento['titulo']}}" required>
-                            <!--div class="invalid-feedback">
-                                Introduzca un título válido.
-                            </div-->
+                            <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Introduzca un título" value="{{$documento['titulo']}}" required>
+                            <div class="invalid-feedback">
+                            </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="fecha">{{'Fecha'}}</label>
-                            <input type="text" class="form-control" name="fecha" id="fecha" placeholder="" value="{{$documento['fecha']}}">
+                            <input type="text" class="form-control" name="fecha" id="fecha" placeholder="Utilize el formato 'día/mes/año' para introducir la fecha" value="{{$documento['fecha']}}" required>
                             <!--div class="invalid-feedback">
                                 Seleccione una fecha correcta.
                             </div-->
                         </div>
                         <div class="col-md-12 mb-3">
                             <label for="info_ppal">{{'Informacion principal'}}</label>
-                            <input type="text" class="form-control" name="info_ppal" id="info_ppal" placeholder="" value="{{$documento['info_ppal']}}" required>
+                            <input type="text" class="form-control" name="info_ppal" id="info_ppal" placeholder="Introduzca la informacíon principal de la entrada" value="{{$documento['info_ppal']}}" required>
                             <!--div- class="invalid-feedback">
                                     Rellene con información principal.
                             </div-->
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="tipo">{{'Tipo de información'}}</label>
-                            <select class="form-control" name="tipo" id="tipo">
-                                <option>Seleccione un tipo de información</option>
+                            <select class="custom-select form-control is-invalid" name="tipo" id="tipo" required>
+                                <option value="">Seleccione un tipo de información</option>
                                 <option value="0" @if($documento['tipo'] == 0) {{('selected="selected"')}} @endif>Histórica</option>
                                 <option value="1" @if($documento['tipo'] == 1) {{('selected="selected"')}} @endif>Campus</option>
                                 <option value="2" @if($documento['tipo'] == 2) {{('selected="selected"')}} @endif>Evento</option>
                             </select>
+                            <div class="invalid-feedback">
+                            </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="foto_ppal">{{'Foto principal'}}</label>
@@ -65,7 +66,7 @@
 
                         <div class="col-md-8 mb-3">
                             <label for="info">{{'Informacion adicional (opcional)'}}</label>
-                            <textarea class="form-control" name="info" id="info" rows="2" placeholder="">{{$documento['info']}}</textarea>
+                            <textarea class="form-control" name="info" id="info" rows="2" placeholder="Aquí puede incluir información adicional para su entrada">{{$documento['info']}}</textarea>
                             <!--div- class="invalid-feedback">
                                     Rellene con información adic.
                             </div-->
@@ -80,7 +81,7 @@
                             </div-->
                         </div>
                         <hr class="col-md-12 mb-2">
-                        <button class="col-4 btn btn-danger" type="submit">Editar</button>
+                        <button class="btn btn-block btn-danger" type="submit">Editar</button>
                         <hr class="mb-4">
                     </div>
                 </form>

@@ -7,29 +7,33 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 order-md-1">
-                    <form action="{{ url('tutoria')}}" method="post" class="needs-validation" novalidate>
+                    <form action="{{ url('tutoria')}}" method="post" class="was-validated">
                         {{ csrf_field() }}
                         <input type="hidden" name="docente" id="docente" value="{{$docente['dni']}}">
                         <input type="hidden" name="id" id="id" value="{{$docente->id()}}">
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <label for="semestre">{{'Semestre'}}</label>
-                                <select class="form-control" name="semestre" id="semestre" required>
-                                    <option>Seleccione un día de la semana</option>
+                                <select class="custom-select form-control is-invalid" name="semestre" id="semestre" required>
+                                    <option value="">Seleccione un día de la semana</option>
                                     <option value="1">1er Semestre</option>
                                     <option value="2">2º Semestre</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                </div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label for="dia_semana">{{'Día de la semana'}}</label>
-                                <select class="form-control" name="dia_semana" id="dia_semana" required>
-                                    <option>Seleccione un día de la semana</option>
+                                <select class="custom-select form-control is-invalid" name="dia_semana" id="dia_semana" required>
+                                    <option value="">Seleccione un día de la semana</option>
                                     <option value="Lunes">Lunes</option>
                                     <option value="Martes">Martes</option>
                                     <option value="Miércoles">Miércoles</option>
                                     <option value="Jueves">Jueves</option>
                                     <option value="Viernes">Viernes</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                </div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label for="hora_inicio">{{'Hora inicio'}}</label>
