@@ -44,7 +44,7 @@
                         @endforeach
                     <td>{{$docencia['aula']}}</td>
                     <td>{{$docencia['dia_semana']}}</td>
-                    <td>{{$docencia['hora_inicio'] . '-' . $docencia['hora_fin']}}</td>>
+                    <td>{{$docencia['hora_inicio'] . '-' . $docencia['hora_fin']}}</td>
                     <td>{{$docencia['tipo']}}</td>
                     <td>
                         <a href="{{ url('docencia/' . $docencia->id() . '/edit') }}" ><button class="btn btn-sm btn-outline-secondary">Editar</button></a>

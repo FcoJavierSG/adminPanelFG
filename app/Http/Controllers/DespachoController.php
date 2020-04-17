@@ -70,9 +70,11 @@ class DespachoController extends Controller
 
         /* Comprobamos si existe un documento con mismo id_asignatura, dia_semana y tipo
          * en cuyo caso no insertaremos */
-        if ($this->exist($datosDespacho['n_despacho'])) {
+        //IMP COMPROBAR SI EXISTE UN DOCENTE ASIGNADO A OTRO DESPACHO
+        if ($this->exist($datosDespacho['n_despacho']) || $this->docenteAsignado($datosDespacho['n_despacho'],$datosDespacho['1erDocente']) ||
+            $this->docenteAsignado($datosDespacho['n_despacho'],$datosDespacho['2oDocente']) || $this->docenteAsignado($datosDespacho['n_despacho'],$datosDespacho['3erDocente'])){
             //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
-            printf('YA EXISTE ESTE DESPACHO');
+            printf('YA EXISTE ESTE DESPACHO O ALGUNOS DE LOS DOCENTES YA ESTÁN ASIGNADOS A OTRO');
         } else {
             $despachoData = $this->despacho;
 
@@ -145,8 +147,12 @@ class DespachoController extends Controller
         // EN CASO QUE CONCUERDE CON OTRO DESPACHO
         if ($this->exist($datosDespacho['n_despacho']) && $this->equal($datosDespacho, $documento)) {
             //DEBERIAMOS DEVOLVER UNA VISTA CON LA RESPUESTA
-            printf('YA EXISTE DICHA DOCENCIA');
-        } else {
+            printf('YA EXISTE ESTE DESPACHO O ALGUNOS DE LOS DOCENTES YA ESTÁN ASIGNADOS A OTRO');
+        } else if ($this->docenteAsignado($datosDespacho['n_despacho'], $datosDespacho['1erDocente']) ||
+            $this->docenteAsignado($datosDespacho['n_despacho'], $datosDespacho['2oDocente']) ||
+            $this->docenteAsignado($datosDespacho['n_despacho'], $datosDespacho['3erDocente'])) {
+            printf('ALGUNOS DE LOS DOCENTES YA ESTÁN ASIGNADOS A OTRO DESPACHO');
+        }else{
             $despachoData = $this->despacho;
 
             $docentesData = array($datosDespacho['1erDocente'], $datosDespacho['2oDocente'], $datosDespacho['3erDocente']);
@@ -201,6 +207,30 @@ class DespachoController extends Controller
         }
 
         return $docExiste;
+    }
+
+    /**
+     * Comprueba la existencia de una entrada en 'despacho'
+     *
+     * @param $idAsignatura
+     * @param $diaSemana
+     * @param $tipo
+     * @return bool
+     */
+    public function docenteAsignado($nDespacho ,$docente){
+        $db = $this->firebase;
+        $consulta = $db->collection('despacho');
+
+        $documentos = $consulta->documents();
+
+        $docenteAsignado = false;
+        foreach ($documentos as $documento){
+            if ($documento->exists() && $documento['n_despacho'] != $nDespacho && !is_null($docente) &&
+                ($docente == $documento['docente'][0] || $docente == $documento['docente'][1] ||
+                    $docente == $documento['docente'][2]) ) $docenteAsignado = true;
+        }
+
+        return $docenteAsignado;
     }
 
     /**
