@@ -25,7 +25,7 @@ if (!isset($_SESSION['active']) || $_SESSION['active'] != true){
 
 <body>
 
-<div class="container-fluid">
+<div class="container-fluid contenedor-externo">
     <div class="row">
         <div class="col-12">
             <div class="d-flex" id="wrapper">

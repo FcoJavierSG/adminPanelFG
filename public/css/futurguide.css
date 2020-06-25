@@ -9,8 +9,8 @@ html, body {
 
 body {
     overflow: auto;
-    display: -ms-flexbox;
-    display: flex;
+    /*display: -ms-flexbox;
+    display: flex;*/
     -ms-flex-align: center;
     align-items: center;
     /*padding-top: 40px;
@@ -134,12 +134,12 @@ body {
 #sidebar-wrapper .sidebar-heading {
     text-align: center;
     font-size: 1.2rem;
-    width: 5rem;
+    width: 6rem;
     background: #b3001b;
 }
 
 #sidebar-wrapper .list-group {
-    width: 5rem;
+    width: 6rem;
 }
 
 .bg-light{
@@ -157,6 +157,11 @@ a.bg-light:hover{
 
 #sidebarlink {
     font-size: 0.8rem;
+}
+
+.contenedor-externo {
+    padding-right: 0px !important;
+    padding-left: 0px !important;
 }
 
 /* Estilos del navbar */
@@ -201,6 +206,6 @@ a.bg-light:hover{
     }
 
     #wrapper.toggled #sidebar-wrapper {
-        margin-left: -5rem;
+        margin-left: -6rem;
     }
 }

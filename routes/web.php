@@ -36,3 +36,9 @@ Route::resource('tutoria', 'TutoriaController');
  * RUTAS PARA LAS PAGINAS DE INFORMACIÓN
  */
 Route::resource('informacion', 'InfoController');
+
+
+/*
+ * RUTA PARA LA GENERACIÓN DE CÓDIGOS QR
+ */
+Route::get('qrcode/{collection}/{id}', 'QRController@makeQrCode')->name('qrcode');

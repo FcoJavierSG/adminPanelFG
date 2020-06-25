@@ -23,7 +23,7 @@
                 <th>Día</th>
                 <th>Horario</th>
                 <th>Tipo</th>
-                <th>Acciones</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -47,12 +47,13 @@
                     <td>{{$docencia['hora_inicio'] . '-' . $docencia['hora_fin']}}</td>
                     <td>{{$docencia['tipo']}}</td>
                     <td>
-                        <a href="{{ url('docencia/' . $docencia->id() . '/edit') }}" ><button class="btn btn-sm btn-outline-secondary">Editar</button></a>
                         <form method="post" action="{{ url('docencia/' . $docencia->id()) }}" style="float: right">
                             {{ csrf_field() }}
                             {{ method_field('DELETE') }}
-                            <button type="submit" onclick="return confirm('¿Estas seguro de que desea eliminar dicha entrada?')" class="btn btn-sm btn-danger">Eliminar</button>
+                            <button type="submit" onclick="return confirm('¿Estas seguro de que desea eliminar dicha entrada?')" class="btn btn-sm btn-danger" style="float: right; margin-left: 5px"><span class="fa fa-trash-alt"></span></button>
                         </form>
+                        <a href="{{ url('docencia/' . $docencia->id() . '/edit') }}" ><button class="btn btn-sm btn-secondary" style="float: right; margin-left: 5px"><span class="fa fa-edit"></span></button></a>
+                        <a href="{{ route('qrcode', ['collection'=>'aula', 'id'=>$docencia['aula']]) }}" target="_blank"><button  class="btn btn-sm btn-secondary" style="float: right;"><span class="fa fa-qrcode"></span></button></a>
                     </td>
                 </tr>
             @endforeach
