@@ -20,8 +20,8 @@ if (isset($_SESSION['active'])){
 
     <title> Login | FuturGuideAR </title>
 </head>
-<body>
-<form method="post" action="{{ route('login') }}" class="form-signin">
+<body style="display: block">
+<form method="post" action="{{ route('login') }}" class="form-signin" style="padding-top: 250px">
     {{ csrf_field() }}
     <div class="text-center mb-4">
         <img class="mb-4" src="{!! asset('images/iconoFG-76.png') !!}" style="border-radius: 20px" alt="logo" width="76" height="76">
@@ -42,7 +42,7 @@ if (isset($_SESSION['active'])){
         {!! $errors->first('password', '<span class="help-block">:message</span>') !!}
     </div>
     <button class="btn btn-lg btn-danger btn-block" type="submit">Iniciar sesión</button>
-    <p class="mt-5 mb-3 text-muted text-center">&copy; 2020</p>
+    <p class="mt-5 mb-3 text-muted text-center">FuturGuide &copy; 2020</p>
 </form>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

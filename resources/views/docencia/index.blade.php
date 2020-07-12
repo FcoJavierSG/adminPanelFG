@@ -52,7 +52,7 @@
                             {{ method_field('DELETE') }}
                             <button type="submit" onclick="return confirm('¿Estas seguro de que desea eliminar dicha entrada?')" class="btn btn-sm btn-danger" style="float: right; margin-left: 5px"><span class="fa fa-trash-alt"></span></button>
                         </form>
-                        <a href="{{ url('docencia/' . $docencia->id() . '/edit') }}" ><button class="btn btn-sm btn-secondary" style="float: right; margin-left: 5px"><span class="fa fa-edit"></span></button></a>
+                        <a href="{{ url('docencia/' . $docencia->id() . '/edit') }}" ><button class="btn btn-sm btn-secondary" style="float: left; margin-left: 5px"><span class="fa fa-edit"></span></button></a>
                         <a href="{{ route('qrcode', ['collection'=>'aula', 'id'=>$docencia['aula']]) }}" target="_blank"><button  class="btn btn-sm btn-secondary" style="float: right;"><span class="fa fa-qrcode"></span></button></a>
                     </td>
                 </tr>

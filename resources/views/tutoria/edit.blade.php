@@ -57,14 +57,15 @@
                             </div-->
                         </div>
                         <hr class="col-md-3 mb-2">
-                        <button class="col-1 btn btn-secondary" type="submit">Editar</button>
+
                     </div>
+                    <button class="btn btn-sm btn-secondary" type="submit" style="float: right;"><span class="fa fa-edit"></span></button>
                 </form>
-                <form method="post" action="{{ url('tutoria/' . $tutoria->id()) }}" style="float: right">
+                <form class="col-1" method="post" action="{{ url('tutoria/' . $tutoria->id()) }}" style="float: right">
                     {{ csrf_field() }}
                     {{ method_field('DELETE')}}
-                    <input type="hidden" name="borrar" id="borra" value="borrar">
-                    <button type="submit" onclick="return confirm('¿Estas seguro de que desea borrar dicha tutoría?')" class="btn btn-danger" style="float: right">Borrar</button>
+                    <input type="hidden" name="borrar" id="borrar" value="borrar">
+                    <button type="submit" onclick="return confirm('¿Estas seguro de que desea borrar dicha tutoría?')" class="btn btn-sm btn-danger" style="float: right"><span class="fa fa-trash-alt"></span></button>
                 </form>
                 <br>
                 <br>
