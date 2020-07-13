@@ -20,7 +20,7 @@ class TutoriaController extends Controller
     }
 
     /**
-     * Lee de Cloud Firestore todos los documentos de 'docencia'
+     * Lee de Cloud Firestore todos los documentos de 'tutoria'
      * y los devuelve junto con la vista principal de docencia
      *
      * @return \Illuminate\View\View
@@ -137,7 +137,7 @@ class TutoriaController extends Controller
 
 
     /**
-     * Actualiza un documento de la coleccion 'docencia' con dicho id
+     * Actualiza un documento de la coleccion 'tutoria' con dicho id
      * a partir de los datos de un formulario
      *
      * @param  \Illuminate\Http\Request  $request
