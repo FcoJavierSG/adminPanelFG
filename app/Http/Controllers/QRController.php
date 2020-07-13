@@ -7,6 +7,13 @@ use Endroid\QrCode\QrCode;
 
 class QRController extends Controller
 {
+    /**
+     *  Genera un código QR a partir de la coleccion y el id pasado
+     *
+     * @param $collection
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function makeQrCode($collection, $id){
 
         // Create a QR code

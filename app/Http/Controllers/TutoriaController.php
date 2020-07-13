@@ -117,7 +117,6 @@ class TutoriaController extends Controller
      */
     public function edit($id)
     {
-
         $db = $this->firebase;
 
         $docente = $db->read('usuario', $id);
@@ -177,7 +176,7 @@ class TutoriaController extends Controller
     }
 
     /**
-     * Elimina el docuemento con dicho id de la coleción 'docencia' de Cloud Firestore
+     * Elimina el docuemento con dicho id de la colección 'tutoria' de Cloud Firestore
      *
      * @param  int  $id
      * @return \Illuminate\View\View
@@ -193,7 +192,7 @@ class TutoriaController extends Controller
     }
 
     /**
-     * Comprueba la existencia de una entrada en 'docencia'
+     * Comprueba la existencia de una entrada en 'tutoria'
      *
      * @param $idAsignatura
      * @param $diaSemana
