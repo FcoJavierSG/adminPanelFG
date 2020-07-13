@@ -15,6 +15,7 @@ _To start this panel, if you do not use a hosting such as Firebase or another pl
 
 * [Laravel](https://laravel.com/docs/7.x) - PHP framework
 * [Firebase Admin SDK](https://firebase-php.readthedocs.io/en/5.6.0/) - Firebase Admin SDK for PHP
+* [endroid/qr-code](https://github.com/endroid/qr-code) - QR Code Generator
 
 ## Author ✒️
 
