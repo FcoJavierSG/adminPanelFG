@@ -220,7 +220,7 @@ class TutoriaController extends Controller
     }
 
     /**
-     * Comprueba la existencia de una entrada en 'info_miscelanea'
+     * Comprueba la existencia de una entrada en 'tutoria'
      *
      * @param $titulo
      * @param $fecha
